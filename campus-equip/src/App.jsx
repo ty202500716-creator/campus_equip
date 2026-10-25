@@ -1,6 +1,7 @@
-import { useState } from 'react'
+import React, { use, useEffect, useState } from 'react'
 import './App.css'
 
+const API = 'http://localhost:5000'
 const MAX_QTY = 10
 
 const iconMap = {
@@ -20,9 +21,9 @@ const iconMap = {
   globe: 'i-globe',
 }
 
-const getIsoDate = (date) => date.toISOString().slice(0, 10)
-
-const clampQty = (value) => Math.min(MAX_QTY, Math.max(1, Number.isFinite(value) ? value : 1))
+// Local date (YYYY-MM-DD). toISOString() uses UTC, which gives the wrong day in Manila before 8am.
+const getIsoDate = (date) =>
+  new Date(date.getTime() - date.getTimezoneOffset() * 60000).toISOString().slice(0, 10)
 
 function App() {
   const today = new Date()
@@ -30,17 +31,37 @@ function App() {
   const plusTwo = new Date(today)
   plusTwo.setDate(plusTwo.getDate() + 2)
 
-  const [equipment, setEquipment] = useState('Laptop')
+  const [equipmentList, setEquipmentList] = useState([])
+  const [equipment, setEquipment] = useState('')
   const [qty, setQty] = useState(1)
   const [purpose, setPurpose] = useState('')
   const [borrowDate, setBorrowDate] = useState(todayIso)
   const [returnDate, setReturnDate] = useState(getIsoDate(plusTwo))
   const [errors, setErrors] = useState({})
   const [toast, setToast] = useState('')
+  const [submitting, setSubmitting] = useState(false)
 
-  const handleQtyChange = (nextValue) => {
-    const clamped = clampQty(nextValue)
-    setQty(clamped)
+  const showToast = (message) => {
+    setToast(message)
+    setTimeout(() => setToast(''), 3500)
+  }
+
+  const loadEquipment = () =>
+    fetch(`${API}/api/equipment`)
+      .then((res) => res.json())
+      .then(setEquipmentList)
+      .catch(() => showToast('Cannot reach the server.'))
+
+  useEffect(() => {
+    loadEquipment()
+  }, [])
+
+  const selected = equipmentList.find((item) => String(item.equipment_id) === equipment)
+  const maxQty = Math.min(MAX_QTY, selected ? selected.available : MAX_QTY)
+
+  const handleQtyChange = (value) => {
+    const next = Math.min(maxQty, Math.max(1, Number.isFinite(value) ? value : 1))
+    setQty(next)
     if (errors.qty) {
       setErrors((prev) => ({ ...prev, qty: '' }))
     }
@@ -54,10 +75,11 @@ function App() {
     setErrors((prev) => ({ ...prev, borrowDate: '', returnDate: '' }))
   }
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault()
 
     const nextErrors = {
+      equipment: equipment ? '' : 'Please select equipment.',
       qty: qty >= 1 ? '' : 'Enter a quantity of at least 1.',
       purpose: purpose.trim() ? '' : 'Tell us why you need this equipment.',
       borrowDate: borrowDate ? '' : 'Choose a borrowing date.',
@@ -68,23 +90,47 @@ function App() {
           : '',
     }
 
+    if (!nextErrors.qty && selected && qty > selected.available) {
+      nextErrors.qty = `Only ${selected.available} available.`
+    }
+
     setErrors(nextErrors)
 
     if (Object.values(nextErrors).some(Boolean)) {
       return
     }
 
-    const data = {
-      equipment,
-      quantity: Number(qty),
-      purpose: purpose.trim(),
-      borrowingDate: borrowDate,
-      returnDate,
-    }
+    setSubmitting(true)
+    try {
+      const res = await fetch(`${API}/api/borrow-requests`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          user_id: 1, // temporary until login exists
+          equipment_id: Number(equipment),
+          quantity: Number(qty),
+          purpose: purpose.trim(),
+          borrow_date: borrowDate,
+          due_date: returnDate,
+        }),
+      })
+      const data = await res.json()
 
-    console.log('Borrowing request:', data)
-    setToast(`Request submitted: ${data.quantity} × ${data.equipment}.`)
-    setPurpose('')
+      if (!res.ok) {
+        showToast(data.error || 'Request failed.')
+        return
+      }
+
+      showToast(`Request submitted: ${qty} × ${selected ? selected.name : 'item'}.`)
+      setEquipment('')
+      setQty(1)
+      setPurpose('')
+      loadEquipment()
+    } catch {
+      showToast('Cannot reach the server.')
+    } finally {
+      setSubmitting(false)
+    }
   }
 
   return (
@@ -224,16 +270,22 @@ function App() {
                   <label htmlFor="equipment">Select Equipment</label>
                   <select
                     id="equipment"
-                    className="control"
+                    className={`control ${errors.equipment ? 'invalid' : ''}`}
                     value={equipment}
-                    onChange={(event) => setEquipment(event.target.value)}
+                    onChange={(event) => {
+                      setEquipment(event.target.value)
+                      setQty(1)
+                      setErrors((prev) => ({ ...prev, equipment: '' }))
+                    }}
                   >
-                    <option>Laptop</option>
-                    <option>Projector</option>
-                    <option>Camera</option>
-                    <option>Microphone</option>
-                    <option>Extension Cord</option>
+                    <option value="">Select equipment</option>
+                    {equipmentList.map((item) => (
+                      <option key={item.equipment_id} value={item.equipment_id}>
+                        {item.name} ({item.available} available)
+                      </option>
+                    ))}
                   </select>
+                  <div className="error" id="equipmentError">{errors.equipment || ''}</div>
                 </div>
 
                 <div className="field">
@@ -251,7 +303,7 @@ function App() {
                       id="qty"
                       type="number"
                       min="1"
-                      max="10"
+                      max={maxQty}
                       value={qty}
                       onChange={(event) => handleQtyChange(Number(event.target.value))}
                       className={errors.qty ? 'invalid' : ''}
@@ -317,7 +369,9 @@ function App() {
                 </div>
               </div>
 
-              <button type="submit" className="submit">Submit Request</button>
+              <button type="submit" className="submit" disabled={submitting}>
+                {submitting ? 'Submitting...' : 'Submit Request'}
+              </button>
               <div className={`toast ${toast ? 'show' : ''}`} id="toast" role="status">
                 {toast}
               </div>

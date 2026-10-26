@@ -1,4 +1,4 @@
-import React, { use, useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import './App.css'
 
 const API = 'http://localhost:5000'
@@ -21,6 +21,27 @@ const iconMap = {
   globe: 'i-globe',
 }
 
+const featureCards = [
+  {
+    title: 'Smart Request Flow',
+    text: 'Track borrowing requests from approval to pickup with one clear student-friendly workflow.',
+  },
+  {
+    title: 'Equipment Visibility',
+    text: 'Browse available laptops, projectors, cameras, and lab gear before submitting a request.',
+  },
+  {
+    title: 'Campus Ready',
+    text: 'Built for WMSU students, faculty, and staff who need reliable equipment access on schedule.',
+  },
+]
+
+const statCards = [
+  { label: 'Available Units', value: '184', note: '+12 this week' },
+  { label: 'Active Requests', value: '39', note: '8 pending review' },
+  { label: 'On-time Return', value: '96%', note: 'Across all rooms' },
+]
+
 // Local date (YYYY-MM-DD). toISOString() uses UTC, which gives the wrong day in Manila before 8am.
 const getIsoDate = (date) =>
   new Date(date.getTime() - date.getTimezoneOffset() * 60000).toISOString().slice(0, 10)
@@ -31,6 +52,7 @@ function App() {
   const plusTwo = new Date(today)
   plusTwo.setDate(plusTwo.getDate() + 2)
 
+  const [screen, setScreen] = useState('landing')
   const [equipmentList, setEquipmentList] = useState([])
   const [equipment, setEquipment] = useState('')
   const [qty, setQty] = useState(1)
@@ -221,48 +243,171 @@ function App() {
         </defs>
       </svg>
 
-      <header className="site-header">
-        <div className="brand-block">
-          <img src="/wmsu_logo.png" alt="Western Mindanao State University seal" width="78" height="74" />
-          <div>
-            <h1>Western Mindanao State University</h1>
-            <p>A Smart Research University by 2040</p>
-          </div>
-        </div>
-      </header>
-
-      <div className="app">
-        <aside className="sidebar">
-          <div className="brand">
-            <div className="brand-logo">
-              <svg className="icon" aria-hidden="true"><use href="#i-cap" /></svg>
-            </div>
-            <span>CampusEquip</span>
-          </div>
-          <ul className="nav">
-            <li><a href="#"><svg className="icon" aria-hidden="true"><use href="#i-home" /></svg><span>Dashboard</span></a></li>
-            <li><a href="#"><svg className="icon" aria-hidden="true"><use href="#i-search" /></svg><span>Browse Equipment</span></a></li>
-            <li><a href="#" className="active" aria-current="page"><svg className="icon" aria-hidden="true"><use href="#i-clipboard" /></svg><span>Borrowing Request</span></a></li>
-            <li><a href="#"><svg className="icon" aria-hidden="true"><use href="#i-box" /></svg><span>Borrowed Equipment</span></a></li>
-            <li><a href="#"><svg className="icon" aria-hidden="true"><use href="#i-bell" /></svg><span>Notifications</span></a></li>
-            <li><a href="#"><svg className="icon" aria-hidden="true"><use href="#i-user" /></svg><span>Profile</span></a></li>
-          </ul>
-          <a href="#" className="logout"><svg className="icon" aria-hidden="true"><use href="#i-logout" /></svg><span>Logout</span></a>
-        </aside>
-
-        <main className="main">
-          <div className="topbar">
-            <div className="user">
-              <div className="avatar" aria-hidden="true">JD</div>
+      {screen === 'landing' ? (
+        <div className="landing-page">
+          <header className="landing-header">
+            <div className="brand-block">
+              <div className="logo-badge">WMSU</div>
               <div>
-                <strong>Juan Dela Cruz</strong>
-                <span>Student</span>
+                <h1>Western Mindanao State University</h1>
+                <p>A Smart Research University by 2040</p>
               </div>
             </div>
-          </div>
+            <nav className="landing-nav" aria-label="Main navigation">
+              <a href="#services">Services</a>
+              <a href="#about">About</a>
+              <a href="#impact">Impact</a>
+              <button type="button" className="nav-cta" onClick={() => setScreen('dashboard')}>
+                Dashboards
+              </button>
+            </nav>
+          </header>
 
-          <section className="card">
-            <h2>Borrowing Request</h2>
+          <main className="landing-main">
+            <section className="hero-section">
+              <div className="hero-copy">
+                <p className="eyebrow">Campus Equipment Lending System</p>
+                <h2>Borrow the tools you need to learn, create, and lead.</h2>
+                <p className="subcopy">
+                  CampusEquip makes it easy for students, faculty, and staff to request resources quickly,
+                  track borrowing dates, and manage equipment use across the university.
+                </p>
+                <div className="hero-actions">
+                  <button type="button" className="primary-btn" onClick={() => setScreen('dashboard')}>
+                    Dashboards
+                  </button>
+                </div>
+                <ul className="hero-badges" aria-label="Highlights">
+                  <li>Fast approval</li>
+                  <li>Real-time availability</li>
+                  <li>Campus-wide access</li>
+                </ul>
+              </div>
+
+              <div className="hero-panel" aria-label="System overview">
+                <div className="panel-card primary-card">
+                  <span className="panel-label">Equipment status</span>
+                  <strong>184 devices</strong>
+                  <small>Available for student use</small>
+                </div>
+                <div className="mini-grid">
+                  <div className="panel-card">
+                    <span className="panel-label">Requests</span>
+                    <strong>39</strong>
+                    <small>Pending review</small>
+                  </div>
+                  <div className="panel-card accent">
+                    <span className="panel-label">Returns</span>
+                    <strong>96%</strong>
+                    <small>On-time record</small>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            <section id="services" className="feature-section">
+              <div className="section-heading">
+                <p className="eyebrow">Why CampusEquip</p>
+                <h3>Everything your academic community needs in one place.</h3>
+              </div>
+
+              <div className="feature-grid">
+                {featureCards.map((card) => (
+                  <article className="feature-card" key={card.title}>
+                    <div className="feature-icon" aria-hidden="true">
+                      <svg className="icon" aria-hidden="true"><use href="#i-box" /></svg>
+                    </div>
+                    <h4>{card.title}</h4>
+                    <p>{card.text}</p>
+                  </article>
+                ))}
+              </div>
+            </section>
+
+            <section id="impact" className="stats-section">
+              {statCards.map((item) => (
+                <div className="stat-card" key={item.label}>
+                  <span>{item.label}</span>
+                  <strong>{item.value}</strong>
+                  <small>{item.note}</small>
+                </div>
+              ))}
+            </section>
+
+            <section id="about" className="cta-section">
+              <div>
+                <p className="eyebrow">Built for WMSU</p>
+                <h3>Supporter of learning, research, and digital access across campus.</h3>
+              </div>
+              <button type="button" className="primary-btn" onClick={() => setScreen('dashboard')}>
+                Dashboards
+              </button>
+            </section>
+          </main>
+        </div>
+      ) : (
+        <div className="dashboard-shell">
+          <header className="site-header dashboard-header">
+            <div className="brand-block">
+              <div className="logo-badge">WMSU</div>
+              <div>
+                <h1>Western Mindanao State University</h1>
+                <p>A Smart Research University by 2040</p>
+              </div>
+            </div>
+          </header>
+
+          <div className="app dashboard-app">
+            <aside className="sidebar">
+              <div className="brand">
+                <div className="brand-logo">
+                  <svg className="icon" aria-hidden="true"><use href="#i-cap" /></svg>
+                </div>
+                <span>CampusEquip</span>
+              </div>
+              <ul className="nav">
+                <li>
+                  <button type="button" className="nav-button" onClick={() => setScreen('landing')}>
+                    <svg className="icon" aria-hidden="true"><use href="#i-home" /></svg>
+                    <span>Landing Page</span>
+                  </button>
+                </li>
+                <li><a href="#" className="active" aria-current="page"><svg className="icon" aria-hidden="true"><use href="#i-clipboard" /></svg><span>Borrowing Request</span></a></li>
+                <li><a href="#"><svg className="icon" aria-hidden="true"><use href="#i-search" /></svg><span>Browse Equipment</span></a></li>
+                <li><a href="#"><svg className="icon" aria-hidden="true"><use href="#i-box" /></svg><span>Borrowed Equipment</span></a></li>
+                <li><a href="#"><svg className="icon" aria-hidden="true"><use href="#i-bell" /></svg><span>Notifications</span></a></li>
+                <li><a href="#"><svg className="icon" aria-hidden="true"><use href="#i-user" /></svg><span>Profile</span></a></li>
+              </ul>
+              <a href="#" className="logout"><svg className="icon" aria-hidden="true"><use href="#i-logout" /></svg><span>Logout</span></a>
+            </aside>
+
+            <main className="main">
+              <div className="topbar">
+                <div className="user">
+                  <div className="avatar" aria-hidden="true">JD</div>
+                  <div>
+                    <strong>Juan Dela Cruz</strong>
+                    <span>Student</span>
+                  </div>
+                </div>
+              </div>
+
+              <section className="summary-strip" aria-label="Dashboard summary">
+                {statCards.map((item) => (
+                  <div className="mini-stat" key={item.label}>
+                    <span>{item.label}</span>
+                    <strong>{item.value}</strong>
+                  </div>
+                ))}
+              </section>
+
+              <section className="card">
+                <div className="card-heading-row">
+                  <h2>Borrowing Request</h2>
+                  <button type="button" className="ghost-btn" onClick={() => setScreen('landing')}>
+                    Back to Landing
+                  </button>
+                </div>
 
             <form id="requestForm" noValidate onSubmit={handleSubmit}>
               <div className="row">
@@ -321,53 +466,53 @@ function App() {
                 </div>
               </div>
 
-              <div className="field full">
-                <label htmlFor="purpose">Purpose of Borrowing</label>
-                <textarea
-                  id="purpose"
-                  className={`control ${errors.purpose ? 'invalid' : ''}`}
-                  placeholder="Enter purpose..."
-                  value={purpose}
-                  onChange={(event) => {
-                    setPurpose(event.target.value)
-                    if (errors.purpose) {
-                      setErrors((prev) => ({ ...prev, purpose: '' }))
-                    }
-                  }}
-                />
-                <div className="error" id="purposeError">{errors.purpose || ''}</div>
-              </div>
+                  <div className="field full">
+                    <label htmlFor="purpose">Purpose of Borrowing</label>
+                    <textarea
+                      id="purpose"
+                      className={`control ${errors.purpose ? 'invalid' : ''}`}
+                      placeholder="Enter purpose..."
+                      value={purpose}
+                      onChange={(event) => {
+                        setPurpose(event.target.value)
+                        if (errors.purpose) {
+                          setErrors((prev) => ({ ...prev, purpose: '' }))
+                        }
+                      }}
+                    />
+                    <div className="error" id="purposeError">{errors.purpose || ''}</div>
+                  </div>
 
-              <div className="row">
-                <div className="field">
-                  <label htmlFor="borrowDate">Borrowing Date</label>
-                  <input
-                    id="borrowDate"
-                    type="date"
-                    className={`control ${errors.borrowDate ? 'invalid' : ''}`}
-                    value={borrowDate}
-                    min={todayIso}
-                    onChange={(event) => handleBorrowDateChange(event.target.value)}
-                  />
-                  <div className="error" id="borrowError">{errors.borrowDate || ''}</div>
-                </div>
+                  <div className="row">
+                    <div className="field">
+                      <label htmlFor="borrowDate">Borrowing Date</label>
+                      <input
+                        id="borrowDate"
+                        type="date"
+                        className={`control ${errors.borrowDate ? 'invalid' : ''}`}
+                        value={borrowDate}
+                        min={todayIso}
+                        onChange={(event) => handleBorrowDateChange(event.target.value)}
+                      />
+                      <div className="error" id="borrowError">{errors.borrowDate || ''}</div>
+                    </div>
 
-                <div className="field">
-                  <label htmlFor="returnDate">Return Date</label>
-                  <input
-                    id="returnDate"
-                    type="date"
-                    className={`control ${errors.returnDate ? 'invalid' : ''}`}
-                    value={returnDate}
-                    min={borrowDate || todayIso}
-                    onChange={(event) => {
-                      setReturnDate(event.target.value)
-                      setErrors((prev) => ({ ...prev, returnDate: '' }))
-                    }}
-                  />
-                  <div className="error" id="returnError">{errors.returnDate || ''}</div>
-                </div>
-              </div>
+                    <div className="field">
+                      <label htmlFor="returnDate">Return Date</label>
+                      <input
+                        id="returnDate"
+                        type="date"
+                        className={`control ${errors.returnDate ? 'invalid' : ''}`}
+                        value={returnDate}
+                        min={borrowDate || todayIso}
+                        onChange={(event) => {
+                          setReturnDate(event.target.value)
+                          setErrors((prev) => ({ ...prev, returnDate: '' }))
+                        }}
+                      />
+                      <div className="error" id="returnError">{errors.returnDate || ''}</div>
+                    </div>
+                  </div>
 
               <button type="submit" className="submit" disabled={submitting}>
                 {submitting ? 'Submitting...' : 'Submit Request'}
@@ -379,6 +524,8 @@ function App() {
           </section>
         </main>
       </div>
+    </div>
+  )}
     </>
   )
 }

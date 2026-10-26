@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Register | WMSU Campus Equipment Borrowing System</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+<div class="auth">
+  <aside class="auth__brand">
+    <div class="auth__seal"><img src="wmsu-seal.png" alt="Western Mindanao State University seal" /></div>
+    <h1 class="auth__system">Campus Equipment<br />Borrowing System</h1>
+    <p class="auth__tagline">Request equipment, track due dates, and return items on time, all in one place.</p>
+    <p class="auth__school">Western Mindanao State University</p>
+  </aside>
+
+  <main class="auth__panel">
+    <div class="auth__card">
+      <img class="auth__seal-sm" src="wmsu-seal.png" alt="" aria-hidden="true" />
+      <h2 class="auth__title">Create your account</h2>
+      <p class="auth__subtitle">Register once to request equipment from the campus inventory.</p>
+
+      <form id="register-form" novalidate>
+        <div class="alert" id="register-error" role="alert" hidden></div>
+
+        <fieldset class="seg">
+          <legend>I am a</legend>
+          <label class="seg__opt is-on"><input type="radio" name="role" value="student" checked /> Student</label>
+          <label class="seg__opt"><input type="radio" name="role" value="staff" /> Staff</label>
+        </fieldset>
+
+        <div class="field">
+          <label for="fullName">Full name</label>
+          <input id="fullName" name="fullName" autocomplete="name" />
+          <span class="field__msg" role="alert"></span>
+        </div>
+
+        <div class="grid2">
+          <div class="field">
+            <label for="idNumber" id="id-label">Student ID</label>
+            <input id="idNumber" name="idNumber" />
+            <span class="field__msg" role="alert"></span>
+          </div>
+          <div class="field">
+            <label for="department" id="dept-label">College</label>
+            <input id="department" name="department" />
+            <span class="field__msg" role="alert"></span>
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="email">Email</label>
+          <input id="email" name="email" type="email" autocomplete="email" />
+          <span class="field__msg" role="alert"></span>
+        </div>
+
+        <div class="grid2">
+          <div class="field">
+            <label for="password">Password</label>
+            <div class="pw">
+              <input id="password" name="password" type="password" autocomplete="new-password" />
+              <button type="button" class="pw__toggle" data-toggle="password">Show</button>
+            </div>
+            <span class="field__hint">8+ characters, letters and numbers</span>
+            <span class="field__msg" role="alert"></span>
+          </div>
+          <div class="field">
+            <label for="confirm">Confirm password</label>
+            <div class="pw">
+              <input id="confirm" name="confirm" type="password" autocomplete="new-password" />
+              <button type="button" class="pw__toggle" data-toggle="confirm">Show</button>
+            </div>
+            <span class="field__msg" role="alert"></span>
+          </div>
+        </div>
+
+        <button class="btn" type="submit">Create account</button>
+      </form>
+
+      <p class="auth__footer">Already registered? <a href="index.html">Log in</a></p>
+    </div>
+  </main>
+</div>
+
+<script src="js/config.js"></script>
+<script src="js/common.js"></script>
+<script src="js/register.js"></script>
+</body>
+</html>

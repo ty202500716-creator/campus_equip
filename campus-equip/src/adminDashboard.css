@@ -1,0 +1,103 @@
+/* Admin dashboard (uses the variables from App.css) */
+
+.muted { color: var(--muted); font-size: 15px; margin-bottom: 16px; }
+
+.section-title {
+  font-family: "Bitter", Georgia, serif;
+  color: var(--crimson);
+  font-size: 20px;
+  margin: 32px 0 14px;
+}
+
+/* Stat cards */
+.stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+}
+.stat {
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 18px 16px;
+}
+.stat strong { display: block; font-size: 30px; color: var(--crimson); line-height: 1.1; }
+.stat span { font-size: 14px; color: var(--muted); }
+.stat.warn { border-color: var(--error); }
+.stat.warn strong { color: var(--error); }
+
+/* Filter chips */
+.chips { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 20px; }
+.chip {
+  border: 1px solid var(--border);
+  background: #fff;
+  border-radius: 999px;
+  padding: 8px 16px;
+  font-size: 14px;
+  text-transform: capitalize;
+  cursor: pointer;
+  color: var(--text);
+}
+.chip.on { background: var(--crimson); border-color: var(--crimson); color: #fff; }
+
+/* Request cards */
+.req {
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 16px;
+  margin-bottom: 14px;
+  background: #fff;
+}
+.req-top { display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-bottom: 6px; }
+.req-meta { font-size: 14px; color: var(--muted); margin-top: 2px; }
+.req-purpose { margin: 10px 0 0; font-size: 15px; }
+.req-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 14px; }
+.req-actions:empty { display: none; }
+
+/* Status badges */
+.badge {
+  font-size: 12.5px;
+  font-weight: 600;
+  text-transform: capitalize;
+  padding: 4px 12px;
+  border-radius: 999px;
+  white-space: nowrap;
+}
+.badge.pending  { background: #fff4d6; color: #8a6200; }
+.badge.approved { background: #e1efff; color: #0b4a9a; }
+.badge.overdue  { background: #fde4e4; color: var(--error); }
+.badge.returned { background: #e6f6ec; color: #1b5e37; }
+.badge.rejected { background: #eee; color: #555; }
+
+/* Buttons */
+.btn {
+  border: 1px solid var(--border);
+  background: #fff;
+  color: var(--text);
+  border-radius: 8px;
+  padding: 10px 18px;
+  font-size: 15px;
+  cursor: pointer;
+}
+.btn:hover { background: #f7eef0; }
+.btn:disabled { opacity: 0.5; cursor: not-allowed; }
+.btn.ok { background: #1b7f46; border-color: #1b7f46; color: #fff; }
+.btn.ok:hover { background: #166b3b; }
+.btn.danger { color: var(--error); border-color: var(--error); }
+.btn.danger:hover { background: #fde4e4; }
+.btn.cancel { width: 100%; margin-top: 12px; height: 48px; }
+
+.submit:disabled { background: #7f9bc4; cursor: not-allowed; }
+
+/* Equipment table (scrolls sideways on phones) */
+.table-wrap { overflow-x: auto; }
+.table { width: 100%; border-collapse: collapse; font-size: 15px; min-width: 520px; }
+.table th, .table td { text-align: left; padding: 12px 10px; border-bottom: 1px solid var(--border); }
+.table th { font-size: 13.5px; color: var(--muted); font-weight: 600; }
+.table .actions { display: flex; gap: 8px; }
+.table .btn { padding: 7px 12px; font-size: 14px; }
+
+@media (max-width: 600px) {
+  .stats { grid-template-columns: repeat(2, 1fr); }
+  .stat strong { font-size: 26px; }
+}

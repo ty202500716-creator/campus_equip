@@ -2,6 +2,7 @@ import express from "express";
 import cors from "cors";
 import pg from "pg";
 import "dotenv/config";
+import adminRoutes from "./adminRoutes.js";
 
 const pool = new pg.Pool({
   connectionString: process.env.DATABASE_URL,
@@ -11,6 +12,7 @@ const pool = new pg.Pool({
 const app = express();
 app.use(cors());
 app.use(express.json());
+app.use("/api/admin", adminRoutes(pool));
 
 app.get("/api/equipment", async (req, res) => {
   const { rows } = await pool.query("SELECT * FROM equipment ORDER BY name");

@@ -1,4 +1,4 @@
-import React, { use, useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import './App.css'
 
 const API = 'http://localhost:5000'
@@ -52,6 +52,7 @@ function App() {
   const plusTwo = new Date(today)
   plusTwo.setDate(plusTwo.getDate() + 2)
 
+  const [screen, setScreen] = useState('landing')
   const [equipmentList, setEquipmentList] = useState([])
   const [equipment, setEquipment] = useState('')
   const [qty, setQty] = useState(1)
@@ -523,6 +524,8 @@ function App() {
           </section>
         </main>
       </div>
+    </div>
+  )}
     </>
   )
 }

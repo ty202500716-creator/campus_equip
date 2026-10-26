@@ -3,14 +3,15 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>CampusEquip – Borrowing Request</title>
-<link href="https://fonts.googleapis.com/css2?family=Bitter:wght@600;700&family=Space+Mono:wght@400&display=swap" rel="stylesheet">
+<title>Borrowing Request – Campus Equipment Borrowing System</title>
+<link href="https://fonts.googleapis.com/css2?family=Bitter:wght@600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
+
+<!-- Icon sprite -->
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
   <defs>
-    <symbol id="i-cap" viewBox="0 0 24 24"><path d="M2 9l10-5 10 5-10 5z"/><path d="M6 11.5V16c0 1.5 2.7 3 6 3s6-1.5 6-3v-4.5"/></symbol>
     <symbol id="i-home" viewBox="0 0 24 24"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h5v-6h4v6h5V10"/></symbol>
     <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></symbol>
     <symbol id="i-clipboard" viewBox="0 0 24 24"><rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 4h6v3H9z"/><path d="M9 12h6M9 16h6"/></symbol>
@@ -18,28 +19,19 @@
     <symbol id="i-bell" viewBox="0 0 24 24"><path d="M6 16v-5a6 6 0 0112 0v5l2 2H4z"/><path d="M10 21h4"/></symbol>
     <symbol id="i-user" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></symbol>
     <symbol id="i-logout" viewBox="0 0 24 24"><path d="M9 4H5v16h4"/><path d="M16 8l4 4-4 4M20 12H9"/></symbol>
-    <symbol id="i-phone" viewBox="0 0 24 24"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 005 5L15 13l5 2v4a2 2 0 01-2 2A16 16 0 013 6a2 2 0 012-2z"/></symbol>
-    <symbol id="i-mail" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></symbol>
-    <symbol id="i-chev" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></symbol>
-    <symbol id="i-up" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M8 14l4-4 4 4"/></symbol>
-    <symbol id="i-down" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M8 10l4 4 4-4"/></symbol>
-    <symbol id="i-globe" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3 3 15 0 18M12 3c-3 3-3 15 0 18"/></symbol>
   </defs>
 </svg>
+
 <header class="site-header">
   <div class="brand-block">
-    <img src="wmsu_logo.png" alt="Western Mindanao State University seal" width="78" height="74">
-    <div>
-      <h1>Western Mindanao State University</h1>
-      <p>A Smart Research University by 2040</p>
-    </div>
+    <div class="logo-mark" aria-hidden="true"><svg class="icon"><use href="#i-box"/></svg></div>
+    <h1>Campus Equipment Borrowing System</h1>
   </div>
 </header>
 
 <div class="app">
 
   <aside class="sidebar">
-    <div class="brand"><div class="brand-logo"><svg class="icon" aria-hidden="true"><use href="#i-cap"/></svg></div><span>CampusEquip</span></div>
     <ul class="nav">
       <li><a href="#"><svg class="icon" aria-hidden="true"><use href="#i-home"/></svg><span>Dashboard</span></a></li>
       <li><a href="#"><svg class="icon" aria-hidden="true"><use href="#i-search"/></svg><span>Browse Equipment</span></a></li>
@@ -48,7 +40,7 @@
       <li><a href="#"><svg class="icon" aria-hidden="true"><use href="#i-bell"/></svg><span>Notifications</span></a></li>
       <li><a href="#"><svg class="icon" aria-hidden="true"><use href="#i-user"/></svg><span>Profile</span></a></li>
     </ul>
-    <a href="#" class="logout"><svg class="icon" aria-hidden="true"><use href="#i-logout"/></svg><span>Logout</span></a>
+    <a href="#" class="logout" aria-label="Logout"><svg class="icon" aria-hidden="true"><use href="#i-logout"/></svg><span>Logout</span></a>
   </aside>
 
   <main class="main">
@@ -60,7 +52,7 @@
     </div>
 
     <section class="card">
-      <h2>Borrowing Request</h2>
+      <h2>New Borrowing Request</h2>
 
       <form id="requestForm" novalidate>
         <div class="row">
@@ -116,12 +108,14 @@
   const qty = $('qty'), purpose = $('purpose'), borrow = $('borrowDate'), ret = $('returnDate');
   const MAX = 10;
 
+  // Local date as YYYY-MM-DD (toISOString would use UTC and can show yesterday)
+  const iso = d => new Date(d.getTime() - d.getTimezoneOffset() * 60000).toISOString().slice(0, 10);
+
   // Default dates: today -> +2 days
-  const iso = d => d.toISOString().slice(0, 10);
   const today = new Date();
+  const plus2 = new Date(today); plus2.setDate(plus2.getDate() + 2);
   borrow.min = iso(today);
   borrow.value = iso(today);
-  const plus2 = new Date(today); plus2.setDate(plus2.getDate() + 2);
   ret.value = iso(plus2);
   ret.min = borrow.value;
 
@@ -132,19 +126,27 @@
 
   // Quantity stepper
   const clamp = n => Math.min(MAX, Math.max(1, n || 1));
-  $('minus').onclick = () => qty.value = clamp(+qty.value - 1);
-  $('plus').onclick  = () => qty.value = clamp(+qty.value + 1);
+  $('minus').onclick = () => { qty.value = clamp(+qty.value - 1); clearError(qty, $('qtyError')); };
+  $('plus').onclick  = () => { qty.value = clamp(+qty.value + 1); clearError(qty, $('qtyError')); };
   qty.addEventListener('change', () => qty.value = clamp(+qty.value));
 
-  // Validation + submit
+  // Validation helpers
   function setError(input, errEl, msg) {
     errEl.textContent = msg;
     (input.closest('.stepper') || input).classList.toggle('invalid', !!msg);
+    input.setAttribute('aria-invalid', msg ? 'true' : 'false');
     return !msg;
   }
+  const clearError = (input, errEl) => setError(input, errEl, '');
+
+  // Clear an error as soon as the user fixes the field
+  [[purpose, 'purposeError'], [borrow, 'borrowError'], [ret, 'returnError'], [qty, 'qtyError']]
+    .forEach(([el, err]) => el.addEventListener('input', () => clearError(el, $(err))));
 
   $('requestForm').addEventListener('submit', e => {
     e.preventDefault();
+    $('toast').classList.remove('show');
+
     const results = [
       setError(qty, $('qtyError'), +qty.value >= 1 ? '' : 'Enter a quantity of at least 1.'),
       setError(purpose, $('purposeError'), purpose.value.trim() ? '' : 'Tell us why you need this equipment.'),
@@ -163,12 +165,10 @@
     };
     console.log('Borrowing request:', data);
 
-    const toast = $('toast');
-    toast.textContent = `Request submitted: ${data.quantity} × ${data.equipment}.`;
-    toast.classList.add('show');
+    $('toast').textContent = `Request submitted: ${data.quantity} × ${data.equipment}.`;
+    $('toast').classList.add('show');
     purpose.value = '';
   });
-
 </script>
 </body>
 </html>

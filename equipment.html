@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Equipment Catalog | CampusEquip</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="site-header">
+    <a href="/index.html" class="logo">CampusEquip</a>
+
+    <nav class="main-nav">
+        <a href="/index.html" class="active">Home</a>
+        <a href="/equipment.html">Equipment</a>
+
+        <a href="#about">About</a>
+        
+    </nav>
+
+    <div class="header-actions">
+        <!-- <a href="login.html" class="btn btn-outline" onclick="accountMessage()">Login</a>
+        <a href="register.html" class="btn" onclick="accountMessage()">Get Started</a>-->
+        <button class="btn btn-outline" onclick="accountMessage()">Login</button>
+        <button class="btn" onclick="accountMessage()">Get Started</button>
+    </div>
+</header>
+
+<main class="catalog-page">
+    <section class="catalog-heading">
+        <p class="eyebrow blue-eyebrow">CAMPUS INVENTORY</p>
+        <h1>Equipment Catalog</h1>
+        <p class="muted">Find the equipment you need for your school activities.</p>
+    </section>
+
+    <div class="catalog-layout">
+        <aside class="filter-sidebar">
+            <div class="filter-heading">
+                <h2>Filters</h2>
+                <button type="button" id="resetFilters" class="text-link">Reset</button>
+            </div>
+
+
+            `
+
+<!-- COLLEGE FILTER -->
+<div class="filter-group">
+    <h3>College</h3>
+
+    <select id="collegeSelect" class="filter-select">
+        <option value="">All Colleges</option>
+        <option value="CA">College of Agriculture</option>
+        <option value="CArch">College of Architecture</option>
+        <option value="CAIS">College of Asian & Islamic Studies</option>
+        <option value="CCS">College of Computing Studies</option>
+        <option value="CCJE">College of Criminal Justice Education</option>
+        <option value="CoE">College of Engineering</option>
+        <option value="CFES">College of Forestry & Environmental Studies</option>
+        <option value="CHE">College of Home Economics</option>
+        <option value="CLaw">College of Law</option>
+        <option value="CLA">College of Liberal Arts</option>
+        <option value="CMED">College of Medicine</option>
+        <option value="CN">College of Nursing</option>
+        <option value="CPADS">College of Public Affairs and Development Studies</option>
+        <option value="CSM">College of Science and Mathematics</option>
+        <option value="CSWCD">College of Social Work & Community Development</option>
+        <option value="CSSPE">College of Sports Science & Physical Education</option>
+        <option value="CTE">College of Teacher Education</option>
+    </select>
+</div>
+
+<!-- CATEGORY FILTER -->
+<div class="filter-group">
+    <h3>Category</h3>
+
+    <select id="categorySelect" class="filter-select">
+        <option value="">All Categories</option>
+        <option value="laptop">Laptop</option>
+        <option value="scale">Digital Scale</option>
+        <option value="binoculars">Binoculars</option>
+        <option value="tape">Tape Measure</option>
+        <option value="scale_ruler">Scale Ruler</option>
+        <option value="mat">Cutting Mat</option>
+        <option value="t-square">T-square</option>
+        <option value="tripod">Tripod</option>
+        <option value="board">Drawing Board</option>
+        <option value="vernier">Vernier Caliper</option>
+        <option value="shears">Pruning Shears</option>
+        <option value="moisture">Soil Moisture Sensor</option>
+        <option value="auger">Sampling Auger</option>
+        <option value="binoculars">Binoculars</option>
+        <option value="scale">Digital Scale</option>
+        <option value="tape">Tape Measure</option>
+        <option value="phmeter">Soil pH Meter</option>
+        <option value="wheelbarrow">Wheelbarrow</option>
+      
+    </select>
+</div>
+            <div class="filter-group">
+                <h3>Condition</h3>
+                <button class="filter-btn active" data-filter-type="condition" data-value="">All Conditions</button>
+                <button class="filter-btn" data-filter-type="condition" data-value="good">Good</button>
+                <button class="filter-btn" data-filter-type="condition" data-value="fair">Fair</button>
+                <button class="filter-btn" data-filter-type="condition" data-value="poor">Poor</button>
+            </div>
+
+        
+        </aside>
+
+        <section class="catalog-content">
+            <div class="catalog-controls">
+                <input type="search" id="searchInput" placeholder="Search equipment..." aria-label="Search equipment">
+
+                <select id="sortSelect" aria-label="Sort equipment">
+                    <option value="popular">Popular: Good to Poor</option>
+                    <option value="name-asc">Name: A-Z</option>
+                    <option value="name-desc">Name: Z-A</option>
+                </select>
+            </div>
+
+            <p id="resultCount" class="result-count">Showing equipment</p>
+
+            <div class="equipment-grid catalog-grid" id="equipmentGrid">
+
+                <!-- CA -->
+
+                <article class="equipment-card catalog-card"
+                    data-id="laptop" data-name="Laptop" data-category="laptop"
+                    data-condition="Good" data-college="CA" data-quantity="5">
+                    <img src="/images/CA/Laptop.webp" alt="Laptop">
+                    <div class="card-body">
+                        <div class="card-title-row">
+                            <h3>Laptop</h3>
+                            <span class="status good">Good</span>
+                        </div>
+                        <p class="muted">Category: Laptop</p>
+                        <p class="muted">College: College of Agriculture</p>
+                        <p class="availability">5 available</p>
+                        <a href="/details.html?item=laptop" class="btn card-btn">View Details</a>
+                    </div>
+                </article>
+
+
+                <article class="equipment-card catalog-card"
+                    data-id="binoculars" data-name="Binoculars" data-category="binoculars"
+                    data-condition="Good" data-college="CA" data-quantity="2">
+                    <img src="/images/CA/Binoculars.jpg" alt="Binoculars">
+                    <div class="card-body">
+                        <div class="card-title-row">
+                            <h3>Binoculars</h3>
+                            <span class="status good">Good</span>
+                        </div>
+                        <p class="muted">Category: Binoculars</p>
+                        <p class="muted">College: College of Agriculture</p>
+                        <p class="availability">2 available</p>
+                        <a href="/details.html?item=binoculars" class="btn card-btn">View Details</a>
+                    </div>
+                </article>
+
+                <article class="equipment-card catalog-card"
+                    data-id="scale" data-name="Digital Scale" data-category="scale"
+                    data-condition="Fair" data-college="CA" data-quantity="3">
+                    <img src="/images/CA/Digital Weighting Scale.jpg" alt="Digital Scale">
+                    <div class="card-body">
+                        <div class="card-title-row">
+                            <h3>Digital Scale</h3>
+                            <span class="status fair">Fair</span>
+                        </div>
+                        <p class="muted">Category: Digital Scale</p>
+                        <p class="muted">College: College of Agriculture</p>
+                        <p class="availability">3 available</p>
+                        <a href="/details.html?item=scale" class="btn card-btn">View Details</a>
+                    </div>
+                </article>
+
+                <article class="equipment-card catalog-card"
+                    data-id="tape" data-name="Tape Measure" data-category="tape"
+                    data-condition="Good" data-college="CA" data-quantity="3">
+                    <img src="/images/CA/Measuring Tape.webp" alt="Tape Measure">
+                    <div class="card-body">
+                        <div class="card-title-row">
+                            <h3>Tape Measure</h3>
+                            <span class="status good">Good</span>
+                        </div>
+                        <p class="muted">Category: Tape Measure</p>
+                        <p class="muted">College: College of Agriculture</p>
+                        <p class="availability">3 available</p>
+                        <a href="/details.html?item=tape" class="btn card-btn">View Details</a>
+                    </div>
+                </article>
+
+                <article class="equipment-card catalog-card"
+                    data-id="shears" data-name="Pruning Shears" data-category="shears"
+                    data-condition="Fair" data-college="CA" data-quantity="8">
+                    <img src="/images/CA/Pruning Shears.jpg" alt="Pruning Shears">
+                    <div class="card-body">
+                        <div class="card-title-row">
+                            <h3>Pruning Shears</h3>
+                            <span class="status fair">Fair</span>
+                        </div>
+                        <p class="muted">Category: Pruning Shears</p>
+                        <p class="muted">College: College of Agriculture</p>
+                        <p class="availability">8 available</p>
+                        <a href="/details.html?item=shears" class="btn card-btn">View Details</a>
+                    </div>
+                </article>
+
+                <article class="equipment-card catalog-card"
+                    data-id="phmeter" data-name="Soil pH Meter" data-category="phmeter"
+                    data-condition="Good" data-college="CA" data-quantity="2">
+                    <img src="/images/CA/soil ph meter.jpg" alt="Soil pH Meter">
+                    <div class="card-body">
+                        <div class="card-title-row">
+                            <h3>Soil pH Meter</h3>
+                            <span class="status good">Good</span>
+                        </div>
+                        <p class="muted">Category: Soil pH Meter</p>
+                        <p class="muted">College: College of Agriculture</p>
+                        <p class="availability">2 available</p>
+                        <a href="/details.html?item=phmeter" class="btn card-btn">View Details</a>
+                    </div>
+                </article>
+
+                <article class="equipment-card catalog-card"
+                    data-id="auger" data-name="Sampling Auger" data-category="auger"
+                    data-condition="Fair" data-college="CA" data-quantity="2">
+                    <img src="/images/CA/Soil Sampling Auger.webp" alt="Sampling Auger">
+                    <div class="card-body">
+                        <div class="card-title-row">
+                            <h3>Sampling Auger</h3>
+                            <span class="status fair">Fair</span>
+                        </div>
+                        <p class="muted">Category: Sampling Auger</p>
+                        <p class="muted">College: College of Agriculture</p>
+                        <p class="availability">2 available</p>
+                        <a href="/details.html?item=auger" class="btn card-btn">View Details</a>
+                    </div>
+                </article>
+
+                <article class="equipment-card catalog-card"
+                    data-id="wheelbarrow" data-name="Wheelbarrow" data-category="wheelbarrow"
+                    data-condition="Good" data-college="CA" data-quantity="3">
+                    <img src="/images/CA/Wheelbarrow.jpg" alt="Wheelbarrow">
+                    <div class="card-body">
+                        <div class="card-title-row">
+                            <h3>Wheelbarrow</h3>
+                            <span class="status poor">Poor</span>
+                        </div>
+                        <p class="muted">Category: Wheelbarrow</p>
+                        <p class="muted">College: College of Agriculture</p>
+                        <p class="availability">3 available</p>
+                        <a href="/details.html?item=wheelbarrow" class="btn card-btn">View Details</a>
+                    </div>
+                </article>
+
+                <article class="equipment-card catalog-card"
+                    data-id="moisture" data-name="Soil Moisture Sensor" data-category="moisture"
+                    data-condition="Good" data-college="CCS" data-quantity="2">
+                    <img src="/images/CA/Soil_moisture_sensor.JPG" alt="Soil Moisture Sensor">
+                    <div class="card-body">
+                        <div class="card-title-row">
+                            <h3>Soil Moisture Sensor</h3>
+                            <span class="status good">Good</span>
+                        </div>
+                        <p class="muted">Category: Soil Moisture Sensor</p>
+                        <p class="muted">College: College of Agriculture</p>
+                        <p class="availability">2 available</p>
+                        <a href="/details.html?item=moisture" class="btn card-btn">View Details</a>
+                    </div>
+                </article>
+
+                <!-- CArch -->
+
+                <article class="equipment-card catalog-card"
+                    data-id="scale_ruler" data-name="Scale Ruler" data-category="scale_ruler"
+                    data-condition="Good" data-college="CArch" data-quantity="2">
+                    <img src="/images/CArch/Architect Scale Ruler.webp" alt="Scale Ruler">
+                    <div class="card-body">
+                        <div class="card-title-row">
+                            <h3>Scale Ruler</h3>
+                            <span class="status good">Good</span>
+                        </div>
+                        <p class="muted">Category: Scale Ruler</p>
+                        <p class="muted">College: College of Architecture</p>
+                        <p class="availability">2 available</p>
+                        <a href="/details.html?item=scale_ruler" class="btn card-btn">View Details</a>
+                    </div>
+                </article>
+
+
+                <article class="equipment-card catalog-card"
+                    data-id="mat" data-name="Cutting Mat" data-category="mat"
+                    data-condition="Good" data-college="CArch" data-quantity="2">
+                    <img src="/images/CArch/Cutting Mat.jpg" alt="Cutting Mat">
+                    <div class="card-body">
+                        <div class="card-title-row">
+                            <h3>Cutting Mat</h3>
+                            <span class="status good">Good</span>
+                        </div>
+                        <p class="muted">Category: Cutting Mat</p>
+                        <p class="muted">College: College of Architecture</p>
+                        <p class="availability">2 available</p>
+                        <a href="/details.html?item=mat" class="btn card-btn">View Details</a>
+                    </div>
+                </article>
+
+                <article class="equipment-card catalog-card"
+                    data-id="board" data-name="Drawing Board" data-category="board"
+                    data-condition="Fair" data-college="CArch" data-quantity="3">
+                    <img src="/images/CArch/Drawing Board.png" alt="Drawing Board">
+                    <div class="card-body">
+                        <div class="card-title-row">
+                            <h3>Drawing Board</h3>
+                            <span class="status fair">Fair</span>
+                        </div>
+                        <p class="muted">Category: Drawing Board</p>
+                        <p class="muted">College: College of Architecture</p>
+                        <p class="availability">3 available</p>
+                        <a href="/details.html?item=board" class="btn card-btn">View Details</a>
+                    </div>
+                </article>
+
+                <article class="equipment-card catalog-card"
+                    data-id="laptop2" data-name="Laptop" data-category="laptop"
+                    data-condition="Good" data-college="CArch" data-quantity="3">
+                    <img src="/images/CArch/Laptop2.webp" alt="Laptop">
+                    <div class="card-body">
+                        <div class="card-title-row">
+                            <h3>Laptop</h3>
+                            <span class="status good">Good</span>
+                        </div>
+                        <p class="muted">Category: Laptop</p>
+                        <p class="muted">College: College of Architecture</p>
+                        <p class="availability">3 available</p>
+                        <a href="/details.html?item=laptop2" class="btn card-btn">View Details</a>
+                    </div>
+                </article>
+
+                <article class="equipment-card catalog-card"
+                    data-id="shears" data-name="Pruning Shears" data-category="shears"
+                    data-condition="Fair" data-college="CA" data-quantity="8">
+                    <img src="/images/CA/Pruning Shears.jpg" alt="Pruning Shears">
+                    <div class="card-body">
+                        <div class="card-title-row">
+                            <h3>Pruning Shears</h3>
+                            <span class="status fair">Fair</span>
+                        </div>
+                        <p class="muted">Category: Pruning Shears</p>
+                        <p class="muted">College: College of Agriculture</p>
+                        <p class="availability">8 available</p>
+                        <a href="/details.html?item=shears" class="btn card-btn">View Details</a>
+                    </div>
+                </article>
+
+                <article class="equipment-card catalog-card"
+                    data-id="phmeter" data-name="Soil pH Meter" data-category="phmeter"
+                    data-condition="Good" data-college="CA" data-quantity="2">
+                    <img src="/images/CA/soil ph meter.jpg" alt="Soil pH Meter">
+                    <div class="card-body">
+                        <div class="card-title-row">
+                            <h3>Soil pH Meter</h3>
+                            <span class="status good">Good</span>
+                        </div>
+                        <p class="muted">Category: Soil pH Meter</p>
+                        <p class="muted">College: College of Agriculture</p>
+                        <p class="availability">2 available</p>
+                        <a href="/details.html?item=phmeter" class="btn card-btn">View Details</a>
+                    </div>
+                </article>
+
+                <article class="equipment-card catalog-card"
+                    data-id="auger" data-name="Sampling Auger" data-category="auger"
+                    data-condition="Fair" data-college="CA" data-quantity="2">
+                    <img src="/images/CA/Soil Sampling Auger.webp" alt="Sampling Auger">
+                    <div class="card-body">
+                        <div class="card-title-row">
+                            <h3>Sampling Auger</h3>
+                            <span class="status fair">Fair</span>
+                        </div>
+                        <p class="muted">Category: Sampling Auger</p>
+                        <p class="muted">College: College of Agriculture</p>
+                        <p class="availability">2 available</p>
+                        <a href="/details.html?item=auger" class="btn card-btn">View Details</a>
+                    </div>
+                </article>
+
+                <article class="equipment-card catalog-card"
+                    data-id="wheelbarrow" data-name="Wheelbarrow" data-category="wheelbarrow"
+                    data-condition="Good" data-college="CA" data-quantity="3">
+                    <img src="/images/CA/Wheelbarrow.jpg" alt="Wheelbarrow">
+                    <div class="card-body">
+                        <div class="card-title-row">
+                            <h3>Wheelbarrow</h3>
+                            <span class="status poor">Poor</span>
+                        </div>
+                        <p class="muted">Category: Wheelbarrow</p>
+                        <p class="muted">College: College of Agriculture</p>
+                        <p class="availability">3 available</p>
+                        <a href="/details.html?item=wheelbarrow" class="btn card-btn">View Details</a>
+                    </div>
+                </article>
+
+                <article class="equipment-card catalog-card"
+                    data-id="moisture" data-name="Soil Moisture Sensor" data-category="moisture"
+                    data-condition="Good" data-college="CCS" data-quantity="2">
+                    <img src="/images/CA/Soil_moisture_sensor.JPG" alt="Soil Moisture Sensor">
+                    <div class="card-body">
+                        <div class="card-title-row">
+                            <h3>Soil Moisture Sensor</h3>
+                            <span class="status good">Good</span>
+                        </div>
+                        <p class="muted">Category: Soil Moisture Sensor</p>
+                        <p class="muted">College: College of Agriculture</p>
+                        <p class="availability">2 available</p>
+                        <a href="/details.html?item=moisture" class="btn card-btn">View Details</a>
+                    </div>
+                </article>
+
+
+
+            </div>
+
+            <p id="noResults" class="no-results" style="display: none;">
+                No equipment matches your search or filters.
+            </p>
+        </section>
+    </div>
+</main>
+
+<footer class="site-footer">
+    <p>© 2026 CampusEquip. All rights reserved.</p>
+</footer>
+
+<script src="script.js"></script>
+</body>
+</html>

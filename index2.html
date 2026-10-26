@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CampusEquip | Home</title>
+    <link rel="stylesheet" href="/assets/style.css">
+</head>
+<body>
+
+<header class="site-header">
+    <a href="index.html" class="logo">CampusEquip</a>
+
+    <nav class="main-nav">
+        <a href="index.html" class="active">Home</a>
+        <a href="/assets/equipment.html">Equipment</a>
+        <a href="#about">About</a>
+    </nav>
+
+    <div class="header-actions">
+        <!-- <a href="login.html" class="btn btn-outline" onclick="accountMessage()">Login</a>
+        <a href="register.html" class="btn" onclick="accountMessage()">Get Started</a>-->
+        <button class="btn btn-outline" onclick="accountMessage()">Login</button>
+        <button class="btn" onclick="accountMessage()">Get Started</button>
+    </div>
+</header>
+
+<main>
+    <section class="hero">
+        <div class="hero-content">
+            <p class="eyebrow">CAMPUS EQUIPMENT MADE SIMPLE</p>
+            <h1>Campus Equipment<br>Borrowing and Inventory System</h1>
+            <p class="hero-description">
+                Easily find and borrow campus equipment for your classes,
+                projects, and school activities.
+            </p>
+
+            <div class="hero-actions">
+                <button class="btn" onclick="accountMessage()">Get Started</button>
+                <a href="/assets/equipment.html" class="btn btn-outline light-outline">
+                    Browse Equipment
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <section class="section" id="featured">
+        <div class="section-heading">
+            <div>
+                <p class="eyebrow blue-eyebrow">OUR INVENTORY</p>
+                <h2>Featured Equipment</h2>
+                <p class="muted">Check the equipment available for borrowing.</p>
+            </div>
+            <a href="/assets/equipment.html" class="text-link">View All Equipment →</a>
+        </div>
+        
+        <div class="equipment-grid">
+            <article class="equipment-card">
+                <img src="/assets/images/CA/Laptop.webp" alt="Laptop">
+                <div class="card-body">
+                    <div class="card-title-row">
+                        <h3>Laptop</h3>
+                        <span class="status good">Good</span>
+                    </div>
+                    <p class="muted">CA · Electronics</p>
+                    <p class="availability">5 available</p>
+                    <a href="/assets/details.html?item=laptop" class="btn card-btn">View Details</a>
+                </div>
+            </article>
+
+            <article class="equipment-card">
+                <img src="https://images.unsplash.com/photo-1525547719571-a2d4ac8945e2?auto=format&fit=crop&w=700&q=80" alt="Projector">
+                <div class="card-body">
+                    <div class="card-title-row">
+                        <h3>Projector</h3>
+                        <span class="status good">Good</span>
+                    </div>
+                    <p class="muted">COE · Presentation</p>
+                    <p class="availability">3 available</p>
+                    <a href="details.html?item=projector" class="btn card-btn">View Details</a>
+                </div>
+            </article>
+
+            <article class="equipment-card">
+                <img src="https://images.unsplash.com/photo-1608043152269-423dbba4e7e1?auto=format&fit=crop&w=700&q=80" alt="Speaker">
+                <div class="card-body">
+                    <div class="card-title-row">
+                        <h3>Speaker</h3>
+                        <span class="status good">Good</span>
+                    </div>
+                    <p class="muted">CED · Audio</p>
+                    <p class="availability">2 available</p>
+                    <a href="details.html?item=speaker" class="btn card-btn">View Details</a>
+                </div>
+            </article>
+
+            <article class="equipment-card">
+                <img src="https://images.unsplash.com/photo-1516035069371-29a1b244cc32?auto=format&fit=crop&w=700&q=80" alt="Camera">
+                <div class="card-body">
+                    <div class="card-title-row">
+                        <h3>Camera</h3>
+                        <span class="status fair">Fair</span>
+                    </div>
+                    <p class="muted">CON · Photography</p>
+                    <p class="availability">2 available</p>
+                    <a href="details.html?item=camera" class="btn card-btn">View Details</a>
+                </div>
+            </article>
+        </div>
+    </section>
+
+    <section class="section how-section" id="how-it-works">
+        <div class="section-heading">
+            <div>
+               <p class="eyebrow blue-eyebrow">ABOUT CAMPUS EQUIP</p>
+                <h2>How It Works</h2>
+            </div>
+        </div>
+
+        <div class="steps-grid">
+            <article class="step-card">
+                <span class="step-number">01</span>
+                <h3>Browse Equipment</h3>
+                <p>Find equipment that you need for school.</p>
+            </article>
+            <article class="step-card">
+                <span class="step-number">02</span>
+                <h3>Submit a Request</h3>
+                <p>Select the equipment you want to borrow.</p>
+            </article>
+            <article class="step-card">
+                <span class="step-number">03</span>
+                <h3>Wait for Approval</h3>
+                <p>The administrator reviews your request.</p>
+            </article>
+            <article class="step-card">
+                <span class="step-number">04</span>
+                <h3>Return Equipment</h3>
+                <p>Return borrowed equipment on time.</p>
+            </article>
+        </div>
+    </section>
+
+    <section class="about-section" id="about">
+        <div>
+             <p class="eyebrow blue-eyebrow">CAMPUS EQUIP</p>
+            <h2>Equipment access made easier.</h2>
+        </div>
+        <p>
+            CampusEquip helps students browse campus equipment, check its
+            condition, view its assigned college, and see listed availability.
+        </p>
+    </section>
+</main>
+
+<footer id="contact" class="site-footer">
+    <p>© 2026 CampusEquip. All rights reserved.</p>
+</footer>
+
+<script>
+    function accountMessage() {
+        alert("Please sign up or log in to continue. Login integration will be added later.");
+    }
+</script>
+
+</body>
+</html>

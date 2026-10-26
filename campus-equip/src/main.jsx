@@ -1,14 +1,12 @@
-import React, { StrictMode } from 'react'
-import { createRoot } from 'react-dom/client'
-import './index.css'
+import React from 'react'
+import ReactDOM from 'react-dom/client'
+import { BrowserRouter } from 'react-router-dom'
 import App from './App.jsx'
-import AdminDashboard from './adminDashboard.jsx'
+import './App.css'
+import './assets/styles.css'
 
-// No router needed: /admin shows the dashboard, everything else shows the student form
-const isAdmin = window.location.pathname.startsWith('/admin')
-
-createRoot(document.getElementById('root')).render(
-  <StrictMode>
-    {isAdmin ? <AdminDashboard /> : <App />}
-  </StrictMode>,
+ReactDOM.createRoot(document.getElementById('root')).render(
+  <BrowserRouter>
+    <App />
+  </BrowserRouter>
 )

@@ -1,0 +1,25 @@
+/* Extra styles for pages. Base design stays in App.css */
+.page-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 18px; }
+.item-card { background: #fff; border: 1px solid rgba(168,0,31,.08); border-radius: 16px; padding: 20px; }
+.item-card h3 { color: var(--crimson); margin-bottom: 6px; }
+.item-card p { color: var(--muted); font-size: 14px; margin-bottom: 4px; }
+.toolbar { display: flex; gap: 12px; margin-bottom: 20px; flex-wrap: wrap; }
+.toolbar .control { flex: 1; min-width: 180px; }
+.table-wrap { overflow-x: auto; }
+table.table { width: 100%; border-collapse: collapse; font-size: 15px; }
+.table th, .table td { text-align: left; padding: 12px 10px; border-bottom: 1px solid var(--border); }
+.table th { color: var(--muted); font-weight: 600; }
+.badge { padding: 4px 10px; border-radius: 999px; font-size: 12px; font-weight: 700; text-transform: capitalize; }
+.badge.pending { background: #fff4d6; color: #8a6200; }
+.badge.approved { background: var(--soft-blue); color: var(--blue); }
+.badge.returned { background: #e6f6ec; color: #1b5e37; }
+.badge.rejected, .badge.overdue { background: #fde7ea; color: var(--error); }
+.btn-sm { border: 0; border-radius: 6px; padding: 6px 12px; margin-right: 6px; font-weight: 600; background: var(--blue); color: #fff; }
+.btn-sm.danger { background: var(--error); }
+.auth-wrap { min-height: 100vh; display: grid; place-items: center; padding: 16px; }
+.auth-wrap .card { width: min(440px, 100%); }
+.auth-wrap .field { margin-bottom: 18px; }
+.auth-link { margin-top: 16px; text-align: center; color: var(--muted); }
+.auth-link a { color: var(--crimson); font-weight: 600; }
+.empty { color: var(--muted); padding: 20px 0; }
+.card + .card { margin-top: 24px; }

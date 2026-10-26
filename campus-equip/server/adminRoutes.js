@@ -1,6 +1,5 @@
 import { Router } from "express";
 
-// Admin API. NOTE: not protected yet. Add login + role check before real use.
 export default function adminRoutes(pool) {
   const router = Router();
 
@@ -12,10 +11,10 @@ export default function adminRoutes(pool) {
 
   // Approved items past their due date become "overdue"
   const markOverdue = () =>
-    pool.query(
-      `UPDATE borrow_requests SET status = 'overdue'
-       WHERE status = 'approved' AND due_date < CURRENT_DATE AND return_date IS NULL`
-    );
+    pool.query(`
+      UPDATE borrow_requests SET status = 'overdue'
+      WHERE status = 'approved' AND returned_at IS NULL AND due_date < CURRENT_DATE
+    `);
 
   // ---------- Dashboard numbers ----------
   router.get(
@@ -24,12 +23,12 @@ export default function adminRoutes(pool) {
       await markOverdue();
       const { rows } = await pool.query(`
         SELECT
-          (SELECT COUNT(*) FROM equipment)::int                              AS total_equipment,
-          (SELECT COALESCE(SUM(available), 0) FROM equipment)::int           AS available_units,
-          (SELECT COUNT(*) FROM borrow_requests WHERE status = 'pending')::int  AS pending,
-          (SELECT COUNT(*) FROM borrow_requests WHERE status = 'approved')::int AS borrowed,
-          (SELECT COUNT(*) FROM borrow_requests WHERE status = 'overdue')::int  AS overdue,
-          (SELECT COUNT(*) FROM users)::int                                  AS total_users
+          (SELECT COUNT(*) FROM equipment WHERE is_active = 1)::int             AS total_equipment,
+          (SELECT COALESCE(SUM(available_quantity), 0) FROM equipment WHERE is_active = 1)::int AS available_units,
+          (SELECT COUNT(*) FROM borrow_requests WHERE status = 'pending')::int    AS pending,
+          (SELECT COUNT(*) FROM borrow_requests WHERE status = 'approved')::int   AS borrowed,
+          (SELECT COUNT(*) FROM borrow_requests WHERE status = 'overdue')::int    AS overdue,
+          (SELECT COUNT(*) FROM users WHERE is_active = 1)::int                  AS total_users
       `);
       res.json(rows[0]);
     })
@@ -41,16 +40,16 @@ export default function adminRoutes(pool) {
     wrap(async (req, res) => {
       await markOverdue();
       const { rows } = await pool.query(`
-        SELECT r.request_id, r.quantity, r.purpose, r.status, r.request_date,
-               r.borrow_date::text AS borrow_date,
+        SELECT r.request_id, r.quantity, r.purpose, r.status, r.requested_at,
+               r.start_date::text  AS start_date,
                r.due_date::text    AS due_date,
-               r.return_date::text AS return_date,
-               u.name AS user_name, u.role AS user_role, u.contact_number,
+               r.returned_at::text AS returned_at,
+               u.full_name AS user_name, u.role AS user_role, u.phone AS contact_number,
                e.name AS equipment_name
         FROM borrow_requests r
         JOIN users u     ON u.user_id = r.user_id
         JOIN equipment e ON e.equipment_id = r.equipment_id
-        ORDER BY r.request_date DESC
+        ORDER BY r.requested_at DESC
       `);
       res.json(rows);
     })
@@ -76,26 +75,25 @@ export default function adminRoutes(pool) {
           return res.status(400).json({ error: "Only pending requests can be approved" });
         }
 
-        const upd = await client.query(
-          "UPDATE equipment SET available = available - $1 WHERE equipment_id = $2 AND available >= $1",
-          [r.quantity, r.equipment_id]
-        );
-        if (upd.rowCount === 0) {
-          await client.query("ROLLBACK");
-          return res.status(400).json({ error: "Not enough units available" });
+        // Find an admin user from the unified users table
+        const adm = await client.query("SELECT user_id FROM users WHERE role = 'admin' LIMIT 1");
+        const adminId = adm.rows[0] ? adm.rows[0].user_id : null;
+
+        if (adminId) {
+          await client.query("SELECT set_config('my.current_user_id', $1, true)", [adminId.toString()]);
         }
 
-        // Temporary: uses the first admin until login exists
-        const adm = await client.query("SELECT user_id FROM admins LIMIT 1");
         await client.query(
           "UPDATE borrow_requests SET status = 'approved', approved_by = $1 WHERE request_id = $2",
-          [adm.rows[0] ? adm.rows[0].user_id : null, req.params.id]
+          [adminId, req.params.id]
         );
+
         await client.query("COMMIT");
         res.json({ ok: true });
       } catch (err) {
         await client.query("ROLLBACK");
-        throw err;
+        console.error(err);
+        res.status(400).json({ error: err.message || "Server error" });
       } finally {
         client.release();
       }
@@ -130,19 +128,24 @@ export default function adminRoutes(pool) {
           await client.query("ROLLBACK");
           return res.status(400).json({ error: "This request is not currently borrowed" });
         }
+
+        const adm = await client.query("SELECT user_id FROM users WHERE role = 'admin' LIMIT 1");
+        const adminId = adm.rows[0] ? adm.rows[0].user_id : null;
+        if (adminId) {
+          await client.query("SELECT set_config('my.current_user_id', $1, true)", [adminId.toString()]);
+        }
+
         await client.query(
-          "UPDATE equipment SET available = available + $1 WHERE equipment_id = $2",
-          [r.quantity, r.equipment_id]
+          "UPDATE borrow_requests SET status = 'returned', returned_at = CURRENT_TIMESTAMP, received_by = $1 WHERE request_id = $2",
+          [adminId, req.params.id]
         );
-        await client.query(
-          "UPDATE borrow_requests SET status = 'returned', return_date = CURRENT_DATE WHERE request_id = $1",
-          [req.params.id]
-        );
+
         await client.query("COMMIT");
         res.json({ ok: true });
       } catch (err) {
         await client.query("ROLLBACK");
-        throw err;
+        console.error(err);
+        res.status(400).json({ error: err.message || "Server error" });
       } finally {
         client.release();
       }
@@ -153,13 +156,14 @@ export default function adminRoutes(pool) {
   router.post(
     "/equipment",
     wrap(async (req, res) => {
-      const { name, category, condition, quantity } = req.body;
-      if (!name || !category || !(quantity >= 0))
-        return res.status(400).json({ error: "Name, category and quantity are required" });
+      const { name, category_id, item_condition, total_quantity, location } = req.body;
+      if (!name || !category_id || !(total_quantity >= 0))
+        return res.status(400).json({ error: "Name, category_id and total_quantity are required" });
+      
       const { rows } = await pool.query(
-        `INSERT INTO equipment (name, category, condition, quantity, available)
-         VALUES ($1, $2, $3, $4, $4) RETURNING *`,
-        [name, category, condition || "good", quantity]
+        `INSERT INTO equipment (name, category_id, item_condition, total_quantity, location)
+         VALUES ($1, $2, $3, $4, $5) RETURNING *`,
+        [name, category_id, item_condition || "good", total_quantity, location || "Property Office"]
       );
       res.status(201).json(rows[0]);
     })
@@ -168,21 +172,16 @@ export default function adminRoutes(pool) {
   router.put(
     "/equipment/:id",
     wrap(async (req, res) => {
-      const { name, category, condition, quantity } = req.body;
-      // available moves by the same amount as quantity; it can't drop below 0
+      const { name, category_id, item_condition, total_quantity, location } = req.body;
       const { rows } = await pool.query(
         `UPDATE equipment
-         SET name = $1, category = $2, condition = $3,
-             available = available + ($4 - quantity),
-             quantity = $4
-         WHERE equipment_id = $5 AND available + ($4 - quantity) >= 0
+         SET name = $1, category_id = $2, item_condition = $3, total_quantity = $4, location = $5
+         WHERE equipment_id = $6
          RETURNING *`,
-        [name, category, condition || "good", quantity, req.params.id]
+        [name, category_id, item_condition || "good", total_quantity, location, req.params.id]
       );
       if (!rows[0])
-        return res
-          .status(400)
-          .json({ error: "Quantity is lower than the units currently borrowed" });
+        return res.status(404).json({ error: "Equipment not found" });
       res.json(rows[0]);
     })
   );

@@ -1,21 +1,44 @@
 import express from "express";
 import cors from "cors";
 import pg from "pg";
-import "dotenv/config";
+import dotenv from "dotenv";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
 import adminRoutes from "./adminRoutes.js";
+import routes, { markOverdue } from "./routes.js";
+
+// Always read server/.env, no matter which folder the server is started from
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+dotenv.config({ path: path.join(__dirname, ".env"), quiet: true });
+
+if (!process.env.DATABASE_URL) {
+  console.error("DATABASE_URL is missing. Check that server/.env exists.");
+}
 
 const pool = new pg.Pool({
   connectionString: process.env.DATABASE_URL,
-  ssl: process.env.DB_SSL === "true" ? { rejectUnauthorized: false } : false,
+  ssl: process.env.DB_SSL === "true"
+    ? { rejectUnauthorized: false }
+    : false,
 });
 
+// Without this, a dropped database connection can crash the whole server
+pool.on("error", (err) => console.error("Database error:", err.message));
+
 const app = express();
+const PORT = process.env.PORT || 5000;
+
 app.use(cors());
 app.use(express.json());
 
+<<<<<<< HEAD
 // Admin Routes
+=======
+>>>>>>> 7f44f044a38052b8b52e72e3ac3cd1804b4938c6
 app.use("/api/admin", adminRoutes(pool));
+app.use("/api", routes(pool));
 
+<<<<<<< HEAD
 // ---------- AUTHENTICATION ROUTES ----------
 
 // Register user
@@ -125,31 +148,39 @@ app.get("/api/equipment", async (req, res) => {
     console.error(err.message);
     res.status(500).json({ error: "Server error" });
   }
+=======
+// Check API
+app.get("/", (req, res) => {
+  res.json({ message: "Campus Equipment API is running" });
+>>>>>>> 7f44f044a38052b8b52e72e3ac3cd1804b4938c6
 });
 
-// Create borrow request using advanced columns (available_quantity, start_date)
-app.post("/api/borrow-requests", async (req, res) => {
-  const { user_id, equipment_id, quantity, purpose, start_date, due_date } = req.body;
+// Check database connection
+pool.query("SELECT 1")
+  .then(() => console.log("Database connected"))
+  .catch((err) => {
+    console.error("Database connection failed:", err.message);
+    console.error("-> Is PostgreSQL running? Does the database in DATABASE_URL exist?");
+  });
 
-  try {
-    const { rows: eq } = await pool.query(
-      "SELECT available_quantity FROM equipment WHERE equipment_id = $1", [equipment_id]
-    );
-    if (!eq[0]) return res.status(404).json({ error: "Equipment not found" });
-    if (quantity > eq[0].available_quantity)
-      return res.status(400).json({ error: `Only ${eq[0].available_quantity} available` });
+// Overdue check on start, then hourly
+markOverdue(pool);
+setInterval(() => markOverdue(pool), 60 * 60 * 1000);
 
-    const { rows } = await pool.query(
-      `INSERT INTO borrow_requests
-         (user_id, equipment_id, quantity, purpose, start_date, due_date)
-       VALUES ($1, $2, $3, $4, $5, $6) RETURNING *`,
-      [user_id, equipment_id, quantity, purpose, start_date, due_date]
-    );
-    res.status(201).json(rows[0]);
-  } catch (err) {
-    console.error(err.message);
-    res.status(400).json({ error: err.message });
+app.use((err, _req, res, _next) => {
+  console.error(err);
+  res.status(500).json({ error: "Server error" });
+});
+
+const server = app.listen(PORT, () => {
+  console.log(`API running on http://localhost:${PORT}`);
+});
+
+server.on("error", (err) => {
+  if (err.code === "EADDRINUSE") {
+    console.error(`Port ${PORT} is already in use. Close the other program using it, or change PORT in server/.env (and API in src/api.js).`);
+  } else {
+    console.error(err);
   }
+  process.exit(1);
 });
-
-app.listen(process.env.PORT, () => console.log("API running on " + process.env.PORT));

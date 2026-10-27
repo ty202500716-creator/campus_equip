@@ -15,8 +15,8 @@ export default function DashboardLayout({ role }) {
         <div className="brand-block">
           <div className="logo-badge">WMSU</div>
           <div>
-            <h1>Western Mindanao State University</h1>
-            <p>A Smart Research University by 2040</p>
+            <h1>Campus Equipment Borowing System</h1>
+            <p>CampusEquip</p>
           </div>
         </div>
       </header>

@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { api, useApi } from '../../api.js'
+import { api, getUser, useApi } from '../../api.js'
 import StatusBadge from '../../components/StatusBadge.jsx'
 
 export default function RequestManagement() {
@@ -9,7 +9,7 @@ export default function RequestManagement() {
 
   const setStatus = async (id, status) => {
     try {
-      await api(`/api/borrow-requests/${id}`, { method: 'PATCH', body: { status } })
+      await api(`/api/borrow-requests/${id}`, { method: 'PATCH', body: { status, admin_id: getUser().user_id } })
       reload()
     } catch (e) {
       setMsg(e.message)

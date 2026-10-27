@@ -7,7 +7,7 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
-server/.env
+#server/.env
 campus-equip/node_modules
 node_modules
 dist

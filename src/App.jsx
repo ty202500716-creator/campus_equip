@@ -145,7 +145,7 @@ function Catalog() {
 
   const reset = () => { setSearch(''); setLocation(''); setCategory(''); setCondition(''); setSort('popular'); };
 
-  // Eksaktong istilo na ginaya mula sa Popular dropdown para maging pareho sila
+  
   const popularDropdownStyle = {
     width: '100%',
     padding: '8px 12px',

@@ -1,9 +1,3 @@
--- Campus Equipment: PostgreSQL schema (matches server/routes.js)
---
--- Create the database first, then run this file against it:
---   psql -U postgres -c "CREATE DATABASE campus_equipment;"
---   psql -U postgres -d campus_equipment -f server/campus-equip-schema.sql
-
 -- ---------- Users ----------
 CREATE TABLE users (
     user_id        SERIAL PRIMARY KEY,

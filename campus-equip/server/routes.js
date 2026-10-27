@@ -7,6 +7,7 @@ pg.types.setTypeParser(1082, (v) => v)
 
 const wrap = (fn) => (req, res, next) => fn(req, res).catch(next)
 const bad = (res, msg, code = 400) => res.status(code).json({ error: msg })
+const rollback = (client) => client.query('ROLLBACK').catch(() => {})
 
 export default function routes(pool) {
   const r = express.Router()
@@ -27,7 +28,7 @@ export default function routes(pool) {
       const { rows } = await client.query(
         `INSERT INTO users (name, email, password_hash, role, contact_number)
          VALUES ($1,$2,$3,$4,$5) RETURNING user_id`,
-        [b.name.trim(), b.email.toLowerCase(), hash, b.role, b.contact_number.trim()])
+        [b.name.trim(), b.email.trim().toLowerCase(), hash, b.role, b.contact_number.trim()])
       const id = rows[0].user_id
       if (b.role === 'student') {
         await client.query('INSERT INTO students (user_id, student_number, course, year_level) VALUES ($1,$2,$3,$4)',
@@ -39,7 +40,7 @@ export default function routes(pool) {
       await client.query('COMMIT')
       res.status(201).json({ ok: true })
     } catch (e) {
-      await client.query('ROLLBACK')
+      await rollback(client)
       if (e.code === '23505') return bad(res, 'Email or ID number is already registered.', 409)
       throw e
     } finally {
@@ -49,7 +50,7 @@ export default function routes(pool) {
 
   r.post('/auth/login', wrap(async (req, res) => {
     const { email, password } = req.body
-    const { rows } = await pool.query('SELECT * FROM users WHERE email = $1', [(email || '').toLowerCase()])
+    const { rows } = await pool.query('SELECT * FROM users WHERE email = $1', [(email || '').trim().toLowerCase()])
     const u = rows[0]
     if (!u || !(await bcrypt.compare(password || '', u.password_hash))) return bad(res, 'Invalid email or password.', 401)
     res.json({ user_id: u.user_id, name: u.name, role: u.role === 'admin' ? 'admin' : 'borrower' })
@@ -142,14 +143,14 @@ export default function routes(pool) {
          JOIN equipment e ON e.equipment_id = r.equipment_id
          WHERE r.request_id = $1 FOR UPDATE OF r`, [req.params.id])
       const q = rows[0]
-      if (!q) { await client.query('ROLLBACK'); return bad(res, 'Request not found.', 404) }
+      if (!q) { await rollback(client); return bad(res, 'Request not found.', 404) }
       const okFrom = status === 'returned' ? ['approved', 'overdue'] : ['pending']
-      if (!okFrom.includes(q.status)) { await client.query('ROLLBACK'); return bad(res, `A ${q.status} request cannot be set to ${status}.`) }
+      if (!okFrom.includes(q.status)) { await rollback(client); return bad(res, `A ${q.status} request cannot be set to ${status}.`) }
 
       if (status === 'approved') {
         const u = await client.query(
           'UPDATE equipment SET available = available - $1 WHERE equipment_id = $2 AND available >= $1', [q.quantity, q.equipment_id])
-        if (!u.rowCount) { await client.query('ROLLBACK'); return bad(res, 'Not enough units available to approve.') }
+        if (!u.rowCount) { await rollback(client); return bad(res, 'Not enough units available to approve.') }
         await client.query('UPDATE borrow_requests SET status=$1, approved_by=$2 WHERE request_id=$3', [status, admin_id || null, q.request_id])
       } else if (status === 'returned') {
         await client.query('UPDATE equipment SET available = available + $1 WHERE equipment_id = $2', [q.quantity, q.equipment_id])
@@ -162,7 +163,7 @@ export default function routes(pool) {
       await client.query('COMMIT')
       res.json({ ok: true })
     } catch (e) {
-      await client.query('ROLLBACK')
+      await rollback(client)
       throw e
     } finally {
       client.release()

@@ -4,10 +4,39 @@ import pg from "pg";
 import dotenv from "dotenv";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import dns from "node:dns";
 import adminRoutes from "./adminRoutes.js";
 import routes, { markOverdue } from "./routes.js";
 
-// Always read server/.env, no matter which folder the server is started from
+// ---------- DNS workaround (system resolver is flaky here) ----------
+dns.setServers(["8.8.8.8", "1.1.1.1"]);
+const realLookup = dns.lookup;
+const cache = new Map();
+
+dns.lookup = (hostname, options, callback) => {
+  if (typeof options === "function") { callback = options; options = {}; }
+  if (typeof options === "number") options = { family: options };
+  const reply = (addr) =>
+    options.all
+      ? callback(null, [{ address: addr, family: 4 }])
+      : callback(null, addr, 4);
+
+  if (cache.has(hostname)) return reply(cache.get(hostname));
+
+  const attempt = (n) => {
+    dns.resolve4(hostname, (err, addrs) => {
+      if (!err && addrs?.length) {
+        cache.set(hostname, addrs[0]);
+        return reply(addrs[0]);
+      }
+      if (n < 3) return setTimeout(() => attempt(n + 1), 300);
+      realLookup(hostname, options, callback);
+    });
+  };
+  attempt(0);
+};
+
+// ---------- Env ----------
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 dotenv.config({ path: path.join(__dirname, ".env"), quiet: true });
 
@@ -15,158 +44,46 @@ if (!process.env.DATABASE_URL) {
   console.error("DATABASE_URL is missing. Check that server/.env exists.");
 }
 
+// ---------- Database ----------
 const pool = new pg.Pool({
   connectionString: process.env.DATABASE_URL,
-  ssl: process.env.DB_SSL === "true"
-    ? { rejectUnauthorized: false }
-    : false,
+  ssl: process.env.DB_SSL === "true" ? { rejectUnauthorized: false } : false,
+  max: 2,
+  idleTimeoutMillis: 5000,
+  connectionTimeoutMillis: 20000,
+  keepAlive: true,
 });
 
-// Without this, a dropped database connection can crash the whole server
 pool.on("error", (err) => console.error("Database error:", err.message));
 
+// ---------- App ----------
 const app = express();
 const PORT = process.env.PORT || 5000;
 
 app.use(cors());
 app.use(express.json());
 
-<<<<<<< HEAD
-// Admin Routes
-=======
->>>>>>> 7f44f044a38052b8b52e72e3ac3cd1804b4938c6
 app.use("/api/admin", adminRoutes(pool));
 app.use("/api", routes(pool));
 
-<<<<<<< HEAD
-// ---------- AUTHENTICATION ROUTES ----------
-
-// Register user
-app.post("/api/auth/register", async (req, res) => {
-  const { 
-    name, 
-    email, 
-    password, 
-    role, 
-    contact_number, 
-    student_number, 
-    course, 
-    year_level, 
-    employee_number, 
-    department, 
-    position 
-  } = req.body;
-
-  // Basic validation
-  if (!name || !email || !password || !contact_number) {
-    return res.status(400).json({ error: "All fields including contact number are required." });
-  }
-
-  const client = await pool.connect();
-  try {
-    await client.query("BEGIN");
-
-    // Check if email already exists
-    const existing = await client.query("SELECT user_id FROM users WHERE email = $1", [email]);
-    if (existing.rows.length > 0) {
-      await client.query("ROLLBACK");
-      return res.status(400).json({ error: "Email is already registered." });
-    }
-
-    // 1. Insert into base 'users' table
-    const userRole = role || "student";
-    const userResult = await client.query(
-      `INSERT INTO users (name, email, password_hash, role, contact_number)
-       VALUES ($1, $2, $3, $4, $5)
-       RETURNING user_id, name, email, role, contact_number`,
-      [name, email, password, userRole, contact_number]
-    );
-
-    const newUser = userResult.rows[0];
-
-    // 2. Insert into role-specific tables based on schema
-    if (userRole === 'student') {
-      await client.query(
-        `INSERT INTO students (user_id, student_number, course, year_level)
-         VALUES ($1, $2, $3, $4)`,
-        [newUser.user_id, student_number, course, year_level]
-      );
-    } else if (userRole === 'staff') {
-      await client.query(
-        `INSERT INTO staff (user_id, employee_number, department, position)
-         VALUES ($1, $2, $3, $4)`,
-        [newUser.user_id, employee_number, department, position || null]
-      );
-    }
-
-    await client.query("COMMIT");
-    res.status(201).json(newUser);
-  } catch (err) {
-    await client.query("ROLLBACK");
-    console.error(err);
-    res.status(500).json({ error: err.message });
-  } finally {
-    client.release();
-  }
-});
-
-// Login user
-app.post("/api/auth/login", async (req, res) => {
-  const { email, password } = req.body;
-
-  try {
-    const { rows } = await pool.query(
-      "SELECT user_id, name, email, role, password_hash FROM users WHERE email = $1",
-      [email]
-    );
-    const user = rows[0];
-
-    if (!user || user.password_hash !== password) {
-      return res.status(401).json({ error: "Invalid email or password." });
-    }
-
-    res.json({
-      user_id: user.user_id,
-      name: user.name,
-      email: user.email,
-      role: user.role,
-    });
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: "Server error during login." });
-  }
-});
-
-// ---------- EQUIPMENT & BORROW ROUTES ----------
-
-// Fetch equipment using your advanced view
-app.get("/api/equipment", async (req, res) => {
-  try {
-    const { rows } = await pool.query("SELECT * FROM v_equipment_availability");
-    res.json(rows);
-  } catch (err) {
-    console.error(err.message);
-    res.status(500).json({ error: "Server error" });
-  }
-=======
-// Check API
-app.get("/", (req, res) => {
+app.get("/", (_req, res) => {
   res.json({ message: "Campus Equipment API is running" });
->>>>>>> 7f44f044a38052b8b52e72e3ac3cd1804b4938c6
 });
 
 // Check database connection
-pool.query("SELECT 1")
+pool
+  .query("SELECT 1")
   .then(() => console.log("Database connected"))
   .catch((err) => {
     console.error("Database connection failed:", err.message);
-    console.error("-> Is PostgreSQL running? Does the database in DATABASE_URL exist?");
+    console.error("-> Is the database reachable? Is DATABASE_URL correct?");
   });
 
-// Overdue check on start, then hourly
-markOverdue(pool);
+// Overdue check shortly after start, then hourly
+setTimeout(() => markOverdue(pool), 5000);
 setInterval(() => markOverdue(pool), 60 * 60 * 1000);
 
+// Error handler (prints the real error in the terminal)
 app.use((err, _req, res, _next) => {
   console.error(err);
   res.status(500).json({ error: "Server error" });
@@ -178,7 +95,9 @@ const server = app.listen(PORT, () => {
 
 server.on("error", (err) => {
   if (err.code === "EADDRINUSE") {
-    console.error(`Port ${PORT} is already in use. Close the other program using it, or change PORT in server/.env (and API in src/api.js).`);
+    console.error(
+      `Port ${PORT} is already in use. Close the other program using it, or change PORT in server/.env (and API in src/api.js).`
+    );
   } else {
     console.error(err);
   }

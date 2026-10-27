@@ -1,8 +1,11 @@
-// Change this to the address of your Express server.
+// ==========================================
+// CONFIGURATION FILE
+// ==========================================
+// Change this to the address of your backend Express server.
 const API_URL = "http://localhost:5000/api";
 
-// Pages to open after login. Rename to your teammates' actual pages.
+// Pages to open after successful login based on user role.
 const PAGES = {
-  dashboard: "dashboard.html", // students and staff
-  admin: "admin.html",         // administrators
+  dashboard: "dashboard.html", // For students and staff
+  admin: "admin.html",         // For administrators
 };

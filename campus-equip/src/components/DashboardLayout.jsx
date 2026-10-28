@@ -7,7 +7,10 @@ import './layout.css'
 export default function DashboardLayout({ role }) {
   const user = getUser()
   if (!user) return <Navigate to="/login" replace />
-  if (user.role !== role) return <Navigate to={user.role === 'admin' ? '/admin' : '/borrower'} replace />
+
+  // Students and staff both use the "borrower" pages; only admins use the admin pages
+  const area = user.role === 'admin' ? 'admin' : 'borrower'
+  if (area !== role) return <Navigate to={`/${area}`} replace />
 
   const initials = user.name.split(' ').map((w) => w[0]).join('').slice(0, 2).toUpperCase()
 
@@ -30,7 +33,7 @@ export default function DashboardLayout({ role }) {
               <div className="avatar" aria-hidden="true">{initials}</div>
               <div>
                 <strong>{user.name}</strong>
-                <span>{user.role === 'admin' ? 'Administrator' : 'Borrower'}</span>
+                <span>{user.role === 'admin' ? 'Administrator' : user.role === 'staff' ? 'Staff' : 'Student'}</span>
               </div>
             </div>
           </div>

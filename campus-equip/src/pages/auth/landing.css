@@ -1,0 +1,139 @@
+@import url("https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,600;8..60,700&display=swap");
+
+/* Landing page: same seal, title font and crimson / white colors as the login page. */
+.lp {
+  --crimson: #a50d27;
+  --crimson-deep: #7d0a1d;
+  --crimson-soft: #fbeef0;
+  --ink: #2a1a1d;
+  --muted: #6f5f62;
+  --line: #e6d9db;
+  --serif: "Source Serif 4", Georgia, serif;
+  width: 100%;
+  min-height: 100vh;
+  background: #fff;
+  color: var(--ink);
+  font-family: "Public Sans", system-ui, sans-serif;
+  scroll-behavior: smooth;
+}
+.lp *, .lp *::before, .lp *::after { box-sizing: border-box; }
+.lp h1, .lp h2, .lp h3, .lp h4, .lp p { margin: 0; }
+.lp a { text-decoration: none; }
+
+/* Header */
+.lp-header {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: var(--crimson);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 14px clamp(16px, 4vw, 48px);
+  flex-wrap: wrap;
+}
+.lp-brand { display: flex; align-items: center; gap: 16px; }
+.lp-seal {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: #fff;
+  padding: 3px;
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, .25);
+  flex-shrink: 0;
+}
+.lp-brand h1 { font-family: var(--serif); font-size: clamp(18px, 2.4vw, 28px); line-height: 1.1; color: #fff; }
+.lp-brand p { font-size: 13px; margin-top: 4px; color: #ffd0d6; }
+.lp-nav { display: flex; align-items: center; gap: 18px; flex-wrap: wrap; }
+.lp-nav > a:not(.lp-btn) { color: rgba(255, 255, 255, .9); font-weight: 600; font-size: 15px; }
+.lp-nav > a:not(.lp-btn):hover { color: #fff; text-decoration: underline; }
+
+/* Buttons */
+.lp-btn {
+  display: inline-block;
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 15px;
+  text-align: center;
+  border: 1.5px solid transparent;
+  cursor: pointer;
+  transition: background .15s, color .15s;
+}
+.lp-btn--light { background: #fff; color: var(--crimson); }
+.lp-btn--light:hover { background: var(--crimson-soft); }
+.lp-btn--light-outline { background: transparent; color: #fff; border-color: rgba(255, 255, 255, .8); }
+.lp-btn--light-outline:hover { background: rgba(255, 255, 255, .14); }
+.lp-btn--red { background: var(--crimson); color: #fff; }
+.lp-btn--red:hover { background: var(--crimson-deep); }
+.lp-btn--block { display: block; width: 100%; margin-top: 10px; }
+
+/* Hero */
+.lp-hero {
+  min-height: 70vh;
+  display: flex;
+  align-items: center;
+  padding: 80px clamp(20px, 8%, 120px);
+  background:
+    linear-gradient(90deg, rgba(125, 10, 29, .93), rgba(165, 13, 39, .72)),
+    url("https://images.unsplash.com/photo-1497366754035-f200968a6e72?auto=format&fit=crop&w=2000&q=80")
+    center / cover no-repeat,
+    var(--crimson);
+  color: #fff;
+}
+.lp-hero__content { max-width: 760px; }
+.lp-hero h2 { font-family: var(--serif); font-size: clamp(34px, 5vw, 56px); line-height: 1.1; margin: 10px 0 20px; color: #fff; }
+.lp-hero__text { font-size: 18px; line-height: 1.6; color: #ffe3e7; max-width: 640px; margin-bottom: 28px; }
+.lp-hero__actions { display: flex; gap: 14px; flex-wrap: wrap; }
+
+.lp-eyebrow { font-size: 12px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--crimson); margin-bottom: 8px; }
+.lp-eyebrow--light { color: #ffd0d6; }
+
+/* Sections */
+.lp-section { padding: 64px clamp(20px, 8%, 120px); }
+.lp-section--tint { background: var(--crimson-soft); }
+.lp-heading { display: flex; justify-content: space-between; align-items: flex-end; gap: 16px; flex-wrap: wrap; margin-bottom: 28px; }
+.lp-heading h3, .lp-about h3 { font-family: var(--serif); font-size: clamp(26px, 3vw, 36px); color: var(--crimson-deep); }
+.lp-muted { color: var(--muted); font-size: 14px; margin-top: 4px; }
+.lp-link { color: var(--crimson); font-weight: 600; }
+.lp-link:hover { text-decoration: underline; }
+.lp-note { background: var(--crimson-soft); border-left: 4px solid var(--crimson); color: var(--crimson-deep); padding: 12px 14px; border-radius: 6px; margin-bottom: 20px; }
+
+/* Equipment cards */
+.lp-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 22px; }
+.lp-card { border: 1px solid var(--line); border-radius: 14px; overflow: hidden; background: #fff; display: flex; flex-direction: column; }
+.lp-card__photo { height: 180px; background: var(--crimson-soft); }
+.lp-card__photo .eq-img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.lp-card__body { padding: 16px; display: flex; flex-direction: column; gap: 6px; flex: 1; }
+.lp-card__title { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; }
+.lp-card__title h4 { font-size: 17px; line-height: 1.25; }
+.lp-card__avail { font-weight: 600; color: var(--crimson-deep); margin-top: auto; padding-top: 6px; }
+.lp-status { padding: 3px 10px; border-radius: 999px; font-size: 12px; font-weight: 700; white-space: nowrap; }
+.lp-status--new, .lp-status--good { background: #eaf6ee; color: #1f6b3a; }
+.lp-status--fair { background: #fff6e0; color: #8a5a00; }
+.lp-status--poor, .lp-status--damaged, .lp-status--retired { background: var(--crimson-soft); color: var(--crimson); }
+
+/* Steps */
+.lp-steps { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 20px; }
+.lp-step { background: #fff; border: 1px solid var(--line); border-top: 4px solid var(--crimson); border-radius: 12px; padding: 22px; }
+.lp-step__n { display: inline-block; font-family: var(--serif); font-size: 28px; font-weight: 700; color: var(--crimson); margin-bottom: 8px; }
+.lp-step h4 { font-size: 18px; color: var(--crimson-deep); margin-bottom: 6px; }
+.lp-step p { color: var(--muted); line-height: 1.5; }
+
+/* About + footer */
+.lp-about {
+  padding: 64px clamp(20px, 8%, 120px);
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 32px;
+  align-items: center;
+}
+.lp-about p:last-child { color: var(--muted); font-size: 17px; line-height: 1.65; }
+.lp-footer { background: var(--crimson-deep); color: #ffd0d6; text-align: center; padding: 22px 16px; font-size: 14px; }
+
+@media (max-width: 800px) {
+  .lp-about { grid-template-columns: 1fr; }
+  .lp-hero { min-height: 60vh; padding-top: 56px; padding-bottom: 56px; }
+}

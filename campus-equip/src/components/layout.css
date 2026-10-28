@@ -1,0 +1,25 @@
+@import url("https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,600;8..60,700&display=swap");
+
+/* Header shared by the borrower and admin dashboards (same logo and title as login) */
+.dashboard-header .brand-block { gap: 18px; }
+.dashboard-header .dash-seal {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: #fff;
+  padding: 3px;
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.25);
+  flex-shrink: 0;
+}
+.dashboard-header .brand-block h1 {
+  font-family: "Source Serif 4", Georgia, serif;
+  font-size: clamp(18px, 2.4vw, 28px);
+}
+.dashboard-header .brand-block p {
+  font-family: "Public Sans", system-ui, sans-serif;
+  letter-spacing: normal;
+  font-size: clamp(12px, 1.3vw, 14px);
+  margin-top: 4px;
+  color: #ffd0d6;
+}
+.sidebar .nav { margin-top: 8px; }

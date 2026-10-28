@@ -1,6 +1,8 @@
 import { Navigate, Outlet } from 'react-router-dom'
 import Sidebar from './Sidebar.jsx'
 import { getUser } from '../api.js'
+import seal from '../assets/wmsu-seal.png'
+import './layout.css'
 
 export default function DashboardLayout({ role }) {
   const user = getUser()
@@ -13,10 +15,10 @@ export default function DashboardLayout({ role }) {
     <div className="dashboard-shell">
       <header className="site-header dashboard-header">
         <div className="brand-block">
-          <div className="logo-badge">WMSU</div>
+          <img className="dash-seal" src={seal} alt="Western Mindanao State University seal" />
           <div>
-            <h1>Western Mindanao State University</h1>
-            <p>A Smart Research University by 2040</p>
+            <h1>Campus Equipment Borrowing System</h1>
+            <p>Western Mindanao State University</p>
           </div>
         </div>
       </header>

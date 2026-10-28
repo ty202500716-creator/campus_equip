@@ -51,7 +51,7 @@ export default function EquipmentManagement() {
             <div className="field">
               <label htmlFor="co">Condition</label>
               <select id="co" className="control" value={form.condition} onChange={set('condition')}>
-                {['New', 'Good', 'Fair', 'Needs repair'].map((c) => <option key={c}>{c}</option>)}
+                {['New', 'Good', 'Fair', 'Poor', 'Damaged', 'Retired'].map((c) => <option key={c}>{c}</option>)}
               </select>
             </div>
             <div className="field"><label htmlFor="q">Quantity</label><input id="q" type="number" min="1" className="control" value={form.quantity} onChange={set('quantity')} /></div>

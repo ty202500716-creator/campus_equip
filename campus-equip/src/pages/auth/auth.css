@@ -1,0 +1,247 @@
+@import url("https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600&family=Source+Serif+4:opsz,wght@8..60,600;8..60,700&display=swap");
+
+/* Variables and resets are scoped to .wa so they don't affect the rest of the app */
+.wa {
+  --crimson: #a50d27;
+  --crimson-deep: #7d0a1d;
+  --crimson-soft: #fbeef0;
+  --white: #ffffff;
+  --ink: #2a1a1d;
+  --muted: #6f5f62;
+  --line: #e6d9db;
+  --serif: "Source Serif 4", Georgia, serif;
+  --sans: "Public Sans", system-ui, sans-serif;
+  font-family: var(--sans);
+  color: var(--ink);
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: minmax(320px, 5fr) 7fr;
+}
+.wa *, .wa *::before, .wa *::after { box-sizing: border-box; }
+.wa h1, .wa h2, .wa p { margin-top: 0; }
+
+/* ---------- Brand Panel (Left Side) ---------- */
+.wa__brand {
+  background: var(--crimson) !important;
+  background-image: radial-gradient(circle at 20% 15%, rgba(255,255,255,.07), transparent 55%);
+  color: var(--white) !important;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  padding: clamp(32px, 6vw, 80px);
+  gap: 20px;
+}
+.wa__brand h1, .wa__brand h2, .wa__brand p, .wa__brand span {
+  color: var(--white) !important;
+}
+.wa__seal {
+  width: clamp(150px, 18vw, 230px);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: var(--white);
+  padding: 8px;
+  box-shadow: 0 0 0 6px rgba(255,255,255,.22);
+}
+.wa__seal img { width: 100%; height: 100%; display: block; border-radius: 50%; }
+.wa__system {
+  font-family: var(--serif);
+  font-size: clamp(30px, 3.6vw, 46px);
+  line-height: 1.1;
+  margin: 12px 0 0;
+  font-weight: 700;
+  color: var(--white) !important;
+}
+.wa__tagline {
+  margin: 0;
+  max-width: 34ch;
+  font-size: 17px;
+  line-height: 1.55;
+  color: #ffe3e7 !important;
+}
+.wa__school {
+  margin: 12px 0 0;
+  font-size: 14px;
+  color: #ffd0d6 !important;
+  border-top: 1px solid rgba(255,255,255,.3);
+  padding-top: 14px;
+}
+
+/* ---------- Form Panel (Right Side) ---------- */
+.wa__panel {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 32px 20px;
+  background: var(--white);
+}
+.wa__card { width: 100%; max-width: 520px; }
+.wa__seal-sm { display: none; width: 64px; height: 64px; margin-bottom: 12px; }
+.wa__title {
+  font-family: var(--serif);
+  font-size: 34px;
+  margin: 0 0 6px;
+  color: var(--crimson-deep);
+}
+.wa__subtitle { margin: 0 0 24px; color: var(--muted); line-height: 1.5; }
+.wa__footer { margin: 22px 0 0; color: var(--muted); font-size: 15px; }
+.wa__footer a, .wa-link {
+  color: var(--crimson);
+  font-weight: 600;
+  text-decoration: none;
+}
+.wa__footer a:hover, .wa-link:hover { text-decoration: underline; }
+
+/* ---------- Form Fields ---------- */
+.wa-field { display: flex; flex-direction: column; gap: 6px; margin-bottom: 16px; }
+.wa-field label { font-size: 14px; font-weight: 600; }
+.wa-field input {
+  width: 100%;
+  padding: 12px 14px;
+  font: inherit;
+  color: var(--ink);
+  border: 1.5px solid var(--line);
+  border-radius: 8px;
+  background: var(--white);
+  transition: border-color .15s, box-shadow .15s;
+}
+.wa-field select {
+  width: 100%;
+  padding: 12px 14px;
+  font: inherit;
+  color: var(--ink);
+  border: 1.5px solid var(--line);
+  border-radius: 8px;
+  background: var(--white);
+  transition: border-color .15s, box-shadow .15s;
+}
+.wa-field input:focus, .wa-field select:focus {
+  outline: none;
+  border-color: var(--crimson);
+  box-shadow: 0 0 0 3px rgba(165,13,39,.15);
+}
+.wa-grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 0 14px; }
+
+/* Password toggle */
+.wa-pw { position: relative; }
+.wa-pw input { padding-right: 64px; }
+.wa-pw__toggle {
+  position: absolute;
+  right: 6px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: 0;
+  color: var(--crimson);
+  font: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  padding: 6px 8px;
+  cursor: pointer;
+  border-radius: 6px;
+}
+.wa-pw__toggle:focus-visible { outline: 2px solid var(--crimson); }
+
+/* ---------- Student / Staff Role Selector (no longer used, kept for safety) ---------- */
+.wa-seg {
+  border: 0;
+  padding: 0;
+  margin: 0 0 18px;
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.wa-seg legend {
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 8px;
+  padding: 0;
+  float: left;
+  width: 100%;
+}
+.wa-seg__opt {
+  flex: 1;
+  text-align: center;
+  padding: 11px 14px;
+  border: 1.5px solid var(--line);
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 500;
+  position: relative;
+  transition: all .15s;
+}
+.wa-seg__opt.is-on {
+  background: var(--crimson);
+  border-color: var(--crimson);
+  color: var(--white);
+}
+
+/* ---------- Button ---------- */
+.wa-btn {
+  display: block;
+  width: 100%;
+  padding: 14px;
+  font: inherit;
+  font-weight: 600;
+  font-size: 16px;
+  text-align: center;
+  color: var(--white);
+  background: var(--crimson);
+  border: 0;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background .15s;
+}
+.wa-btn:hover:not(:disabled) { background: var(--crimson-deep); }
+.wa-btn:focus-visible { outline: 3px solid rgba(165,13,39,.35); outline-offset: 2px; }
+.wa-btn:disabled { opacity: .65; cursor: wait; }
+
+a.wa-btn { text-decoration: none; }
+.wa-btn + .wa-btn { margin-top: 12px; }
+.wa-btn--ghost {
+  background: var(--white);
+  color: var(--crimson);
+  border: 1.5px solid var(--crimson);
+}
+.wa-btn--ghost:hover:not(:disabled) { background: var(--crimson-soft); }
+.wa-opt { font-weight: 400; color: var(--muted); }
+.wa-features { list-style: none; margin: 0 0 26px; padding: 0; display: grid; gap: 12px; }
+.wa-features li {
+  display: flex; flex-direction: column; gap: 2px;
+  padding: 12px 14px;
+  border: 1.5px solid var(--line);
+  border-left: 4px solid var(--crimson);
+  border-radius: 8px;
+}
+.wa-features strong { color: var(--crimson-deep); font-size: 15px; }
+.wa-features span { color: var(--muted); font-size: 14px; line-height: 1.45; }
+
+/* ---------- Alerts ---------- */
+.wa-alert {
+  background: var(--crimson-soft);
+  border-left: 4px solid var(--crimson);
+  color: var(--crimson-deep);
+  padding: 12px 14px;
+  border-radius: 6px;
+  margin-bottom: 16px;
+  font-size: 14px;
+}
+.wa-alert--ok {
+  background: #fff;
+  border: 1.5px solid var(--crimson);
+  border-left-width: 4px;
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 860px) {
+  .wa { grid-template-columns: 1fr; }
+  .wa__brand { display: none; }
+  .wa__seal-sm { display: block; }
+  .wa__panel { align-items: flex-start; padding-top: 40px; }
+}
+@media (max-width: 480px) {
+  .wa-grid2 { grid-template-columns: 1fr; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .wa * { transition: none !important; }
+}

@@ -24,12 +24,8 @@ export default function Sidebar({ role }) {
 
   return (
     <aside className="sidebar">
-      <div className="brand">
-        <div className="brand-logo">C</div>
-        <span>CampusEquip</span>
-      </div>
       <ul className="nav">
-        <li><NavLink to="/">Landing Page</NavLink></li>
+        <li><NavLink to="/">Home</NavLink></li>
         {links[role].map(([to, label, end]) => (
           <li key={to}><NavLink to={to} end={end}>{label}</NavLink></li>
         ))}
